@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.SysUserRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.SysUserRole" >
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.SysUserRole" >
+    insert into sys_user_role (user_id, role_id, create_by, 
+      create_time, update_by, update_time, 
+      del_flag, remark_)
+    values (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{createBy,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{delFlag,jdbcType=BIT}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select user_id, role_id, create_by, create_time, update_by, update_time, del_flag, 
+    remark_
+    from sys_user_role
+  </select>
+  
+  <select id="queryUserRole" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+    select user_id, role_id, create_by, create_time, update_by, update_time, del_flag, 
+    remark_
+    from sys_user_role
+    <where>
+    	del_flag = '0'
+		<if test="userId != null and userId != ''">
+				and user_id = #{userId}
+		</if>
+    </where>
+  </select>
+  
+  <update id="deleteUserRole" parameterType="java.lang.Long" >
+    update sys_user_role
+    set del_flag = '1'
+    where user_id = #{userId,jdbcType=BIGINT}
+  </update>
+  
+</mapper>

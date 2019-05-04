@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.AdWorkOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.AdWorkOrder" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="team_id" property="teamId" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="task_title" property="taskTitle" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="BIGINT" />
+    <result column="operation_category" property="operationCategory" jdbcType="INTEGER" />
+    <result column="operation_sub_category" property="operationSubCategory" jdbcType="INTEGER" />
+    <result column="emergency_level" property="emergencyLevel" jdbcType="INTEGER" />
+    <result column="operation_title" property="operationTitle" jdbcType="VARCHAR" />
+    <result column="risk_warning" property="riskWarning" jdbcType="INTEGER" />
+    <result column="status_" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="risk_description" property="riskDescription" jdbcType="LONGVARCHAR" />
+    <result column="detailed_description" property="detailedDescription" jdbcType="LONGVARCHAR" />
+    <result column="create_anne_remark" property="createAnneRemark" jdbcType="LONGVARCHAR" />
+    <result column="operation_result" property="operationResult" jdbcType="LONGVARCHAR" />
+    <result column="complete_way" property="completeWay" jdbcType="LONGVARCHAR" />
+    <result column="complete_anne_remark" property="completeAnneRemark" jdbcType="LONGVARCHAR" />
+    <result column="archive_anne_remark" property="archiveAnneRemark" jdbcType="LONGVARCHAR" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ad_work_order
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.AdWorkOrder" 
+  																		useGeneratedKeys="true" keyProperty="id" >
+    insert into ad_work_order (id_, team_id, task_id, 
+      task_title, target_id, operation_category, 
+      operation_sub_category, emergency_level, operation_title, 
+      risk_warning, status_, create_time, 
+      create_by, update_time, update_by, 
+      del_flag, risk_description, detailed_description, 
+      create_anne_remark, operation_result, 
+      complete_way, complete_anne_remark, 
+      archive_anne_remark, remark_)
+    values (#{id,jdbcType=BIGINT}, #{teamId,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, 
+      #{taskTitle,jdbcType=VARCHAR}, #{targetId,jdbcType=BIGINT}, #{operationCategory,jdbcType=INTEGER}, 
+      #{operationSubCategory,jdbcType=INTEGER}, #{emergencyLevel,jdbcType=INTEGER}, #{operationTitle,jdbcType=VARCHAR}, 
+      #{riskWarning,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=BIT}, #{riskDescription,jdbcType=LONGVARCHAR}, #{detailedDescription,jdbcType=LONGVARCHAR}, 
+      #{createAnneRemark,jdbcType=LONGVARCHAR}, #{operationResult,jdbcType=LONGVARCHAR}, 
+      #{completeWay,jdbcType=LONGVARCHAR}, #{completeAnneRemark,jdbcType=LONGVARCHAR}, 
+      #{archiveAnneRemark,jdbcType=LONGVARCHAR}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.AdWorkOrder" >
+    update ad_work_order
+    set team_id = #{teamId,jdbcType=BIGINT},
+      task_id = #{taskId,jdbcType=BIGINT},
+      task_title = #{taskTitle,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=BIGINT},
+      operation_category = #{operationCategory,jdbcType=INTEGER},
+      operation_sub_category = #{operationSubCategory,jdbcType=INTEGER},
+      emergency_level = #{emergencyLevel,jdbcType=INTEGER},
+      operation_title = #{operationTitle,jdbcType=VARCHAR},
+      risk_warning = #{riskWarning,jdbcType=INTEGER},
+      status_ = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      risk_description = #{riskDescription,jdbcType=LONGVARCHAR},
+      detailed_description = #{detailedDescription,jdbcType=LONGVARCHAR},
+      create_anne_remark = #{createAnneRemark,jdbcType=LONGVARCHAR},
+      operation_result = #{operationResult,jdbcType=LONGVARCHAR},
+      complete_way = #{completeWay,jdbcType=LONGVARCHAR},
+      complete_anne_remark = #{completeAnneRemark,jdbcType=LONGVARCHAR},
+      archive_anne_remark = #{archiveAnneRemark,jdbcType=LONGVARCHAR},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, team_id, task_id, task_title, target_id, operation_category, operation_sub_category, 
+    emergency_level, operation_title, risk_warning, status_, create_time, create_by, 
+    update_time, update_by, del_flag, risk_description, detailed_description, create_anne_remark, 
+    operation_result, complete_way, complete_anne_remark, archive_anne_remark, remark_
+    from ad_work_order
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, team_id, task_id, task_title, target_id, operation_category, operation_sub_category, 
+    emergency_level, operation_title, risk_warning, status_, create_time, create_by, 
+    update_time, update_by, del_flag, risk_description, detailed_description, create_anne_remark, 
+    operation_result, complete_way, complete_anne_remark, archive_anne_remark, remark_
+    from ad_work_order
+  </select>
+  
+  <select id="queryPageList" resultType="java.util.Map" >
+    select c.name_ AS team_name,b.infrastructure_name,a.*
+    from ad_work_order a
+	left join target_infrastructure b on a.target_id = b.id_
+	left join sys_corps c on a.team_id = c.id_
+	<where>
+    	a.del_flag = '0'
+		<if test="teamId != null and teamId != ''">
+			AND a.team_id = #{teamId}
+		</if>
+		<if test="type != null and type != '' and type == 2">
+			AND a.status_ != '0'
+		</if>
+    </where>
+  </select>
+  
+  <select id="queryUnfinished" resultType="java.util.Map" parameterType="java.lang.Long">
+    select c.name_ AS team_name,b.infrastructure_name,a.*
+    from ad_work_order a
+	left join target_infrastructure b on a.target_id = b.id_
+	left join sys_corps c on a.team_id = c.id_
+    where a.del_flag = '0'
+    and a.task_id = #{taskId}
+	and a.status_ in(2,4)
+  </select>
+  
+  <select id="queryNotOver" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select id_, team_id, task_id, task_title, target_id, operation_category, operation_sub_category, 
+    emergency_level, operation_title, risk_warning, status_, create_time, create_by, 
+    update_time, update_by, del_flag, risk_description, detailed_description, remark_
+    from ad_work_order
+    where del_flag = '0'
+    and task_id = #{taskId}
+	and status_ in(0,1)
+  </select>
+  
+  <select id="queryNotBreak" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select id_, team_id, task_id, task_title, target_id, operation_category, operation_sub_category, 
+    emergency_level, operation_title, risk_warning, status_, create_time, create_by, 
+    update_time, update_by, del_flag, risk_description, detailed_description, remark_
+    from ad_work_order
+    where del_flag = '0'
+    and task_id = #{taskId}
+	and status_ in(0,1,2,4)
+  </select>
+
+</mapper>

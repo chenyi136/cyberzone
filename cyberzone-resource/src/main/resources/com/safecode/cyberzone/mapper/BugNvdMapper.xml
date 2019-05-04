@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.BugNvdMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.BugNvd" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="cycle_id" property="cycleId" jdbcType="BIGINT" />
+    <result column="name_" property="name" jdbcType="VARCHAR" />
+    <result column="severity_" property="severity" jdbcType="VARCHAR" />
+    <result column="published_" property="published" jdbcType="TIMESTAMP" />
+    <result column="modified_" property="modified" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="classify_" property="classify" jdbcType="BIGINT" />
+    <result column="descript_" property="descript" jdbcType="LONGVARCHAR" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bug_nvd
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.BugNvd" >
+    insert into bug_nvd (id_, cycle_id, name_, 
+      severity_, published_, modified_, 
+      create_time, create_by, update_time, 
+      update_by, del_flag, classify_, 
+      descript_, remark_)
+    values (#{id,jdbcType=BIGINT}, #{cycleId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{severity,jdbcType=VARCHAR}, #{published,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=BIGINT}, #{delFlag,jdbcType=BIT}, #{classify,jdbcType=BIGINT}, 
+      #{descript,jdbcType=LONGVARCHAR}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.BugNvd" >
+    update bug_nvd
+    set cycle_id = #{cycleId,jdbcType=BIGINT},
+      name_ = #{name,jdbcType=VARCHAR},
+      severity_ = #{severity,jdbcType=VARCHAR},
+      published_ = #{published,jdbcType=TIMESTAMP},
+      modified_ = #{modified,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      classify_ = #{classify,jdbcType=BIGINT},
+      descript_ = #{descript,jdbcType=LONGVARCHAR},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, cycle_id, name_, severity_, published_, modified_, create_time, create_by, 
+    update_time, update_by, del_flag, classify_, descript_, remark_
+    from bug_nvd
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, cycle_id, name_, severity_, published_, modified_, create_time, create_by, 
+    update_time, update_by, del_flag, classify_, descript_, remark_
+    from bug_nvd
+  </select>
+  
+  <update id="deleteByCycleId" parameterType="java.lang.Long" >
+    update bug_nvd
+    set del_flag = '1'
+    where cycle_id = #{cycleId,jdbcType=BIGINT}
+  </update>
+  
+  <!-- NVD漏洞分页列表 (有条件)-->
+  <select id="queryPageList" resultMap="BaseResultMap" parameterType="com.safecode.cyberzone.vo.BugNvdVo">
+    select id_, cycle_id, name_, severity_, published_, modified_, create_time, create_by, 
+    update_time, update_by, del_flag, classify_, descript_, remark_
+    from bug_nvd
+    <where>
+    	del_flag = '0'
+		<if test="severity != null and severity != ''">
+			AND severity_ = #{severity}
+		</if>
+		<if test="descript != null and descript != ''">
+			AND descript_ like CONCAT('%',#{descript},'%')
+		</if>
+		  <if test="startTime != null and startTime != ''">
+			AND modified_ &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND modified_ &lt;= #{endTime}
+		</if>
+		<if test="classify != null and classify != ''">
+			AND classify_ = #{classify}
+		</if>
+    </where>
+  </select>
+  
+  <!-- 根据id查询nvd漏洞详情  -->
+  <select id="queryById" resultType="com.safecode.cyberzone.vo.BugNvdVo" parameterType="java.lang.Long" >
+    select nvd.id_ AS id, nvd.name_ AS name, nvd.severity_ AS severity,nvd.classify_ as classify,nvd.cycle_id as cycleId, nvd.published_ AS published, nvd.modified_ AS modified,
+    nvd.descript_ AS descript, cycle.file_path AS filePath
+    from bug_nvd nvd, bug_cycle cycle
+    where nvd.id_ = #{id,jdbcType=BIGINT} AND cycle.id_ = nvd.cycle_id
+  </select>
+  
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into bug_nvd (id_, cycle_id, name_, 
+      severity_, published_, modified_, 
+      create_time, create_by, update_time, 
+      update_by, del_flag, descript_, 
+      remark_)
+    values 
+    <foreach item="item" index="index" collection="list" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.cycleId,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR}, 
+      #{item.severity,jdbcType=VARCHAR}, #{item.published,jdbcType=TIMESTAMP}, #{item.modified,jdbcType=TIMESTAMP}, 
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=BIGINT}, #{item.updateTime,jdbcType=TIMESTAMP}, 
+      #{item.updateBy,jdbcType=BIGINT}, #{item.delFlag,jdbcType=BIT}, #{item.descript,jdbcType=LONGVARCHAR}, 
+      #{item.remark,jdbcType=LONGVARCHAR})
+    </foreach>
+  </insert>
+  
+</mapper>

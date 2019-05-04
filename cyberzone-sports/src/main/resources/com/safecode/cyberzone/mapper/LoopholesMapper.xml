@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.LoopholesMapper">
+	<sql id="loopholesFields">
+		a.uuid,
+		a.user_id,
+		a.team_id,
+		a.work_id,
+		a.attribute,
+		a.attribute_other,
+		a.ranges,
+		a.description,
+		a.screenshot,
+		a.attachment,
+		a.verifier,
+		a.archivist,
+		a.status,
+		a.refuse_opinion,
+		a.score,
+		a.score_opinion,
+		a.created_at,
+		a.updated_at
+	</sql>
+	<sql id="adWorkOrderFields">
+		id_,
+		operation_title,
+		infrastructure_name
+	</sql>
+	<sql id="sysCorpsFields">
+		id_,
+		name_,
+		logo_ ,
+		description_
+	</sql>
+	<sql id="loopholesVOFields">
+		<include refid="loopholesFields" />
+		,
+		b.user_name,
+		c.name_,
+		e.operation_title,
+		e.task_title,
+		d.infrastructure_name,
+		d.vnc_url
+	</sql>
+	<resultMap id="baseResultMap" type="com.safecode.cyberzone.pojo.Loopholes">
+		<id column="uuid" property="uuid" />
+		<result column="user_id" property="userId" />
+		<result column="team_id" property="teamId" />
+		<result column="work_id" property="workId" />
+		<result column="attribute" property="attribute" />
+		<result column="attribute_other" property="attributeOther" />
+		<result column="ranges" property="ranges" />
+		<result column="description" property="description" />
+		<result column="screenshot" property="screenshot" />
+		<result column="attachment" property="attachment" />
+		<result column="verifier" property="verifier" />
+		<result column="archivist" property="archivist" />
+		<result column="status" property="status" />
+		<result column="refuse_opinion" property="refuseOpinion" />
+		<result column="score" property="score" />
+		<result column="score_opinion" property="scoreOpinion" />
+		<result column="created_at" property="createdAt" />
+		<result column="updated_at" property="updatedAt" />
+	</resultMap>
+	<resultMap type="com.safecode.cyberzone.pojo.AdWorkOrder" id="adWorkOrderResultMap">
+		<id column="id_" property="id" />
+		<result column="operation_title" property="operationTitle" />
+	</resultMap>
+	<resultMap type="com.safecode.cyberzone.vo.LoopholesVO" id="loopholesVOResultMap"
+		extends="baseResultMap">
+		<result column="user_name" property="userName" />
+		<result column="name_" property="name" />
+		<result column="operation_title" property="operationTitle" />
+		<result column="task_title" property="taskTitle" />
+		<result column="sum(score)" property="total" />
+		<result column="infrastructure_name" property="infrastructureName" />
+		<result column="vnc_url" property="vncUrl" />
+	</resultMap>
+	<resultMap type="com.safecode.cyberzone.pojo.SysCorps" id="sysCorpsResultMap">
+		<id column="id_" property="id" />
+		<result column="name_" property="name" />
+		<result column="logo_" property="logo" />
+		<result column="description_" property="describe" />
+	</resultMap>
+
+	<select id="queryTeamIdByUserId" parameterType="Integer"
+		resultType="Integer">
+		SELECT
+		corps_id
+		FROM
+		sys_user_corps
+		WHERE
+		user_id = #{userId}
+	</select>
+	<select id="queryTeamLoopholesByTeamId" parameterType="Integer"
+		resultMap="loopholesVOResultMap">
+		SELECT
+		<include refid="loopholesVOFields" />
+		FROM
+		loopholes a
+		LEFT JOIN sys_user b ON
+		a.user_id = b.id_
+		AND b.del_flag
+		= 0
+		LEFT JOIN
+		sys_corps c ON c.id_ =
+		a.team_id
+		AND c.del_flag = 0
+		LEFT JOIN
+		ad_work_order e ON a.work_id =
+		e.id_
+		AND e.del_flag = 0
+		LEFT JOIN
+		target_infrastructure d ON d.id_ =
+		e.target_id
+		AND d.del_flag = 0
+		WHERE
+		a.status =4
+		AND a.team_id = #{teamId}
+	</select>
+	<select id="queryCorpsScore" resultMap="loopholesVOResultMap">
+		SELECT
+		<include refid="loopholesVOFields" />
+		,sum(score)
+		FROM
+		loopholes a
+		LEFT JOIN sys_user b ON a.user_id = b.id_
+		AND
+		b.del_flag = 0
+		LEFT JOIN
+		sys_corps c ON c.id_ = a.team_id
+		AND
+		c.del_flag
+		= 0
+		LEFT JOIN
+		ad_work_order e ON a.work_id = e.id_
+		AND
+		e.del_flag = 0
+		LEFT JOIN
+		target_infrastructure d ON d.id_ = e.target_id
+		AND d.del_flag
+		= 0
+		WHERE
+		a.status = 4
+		GROUP BY
+		a.team_id
+		ORDER BY
+		sum(score)
+		DESC
+	</select>
+
+	<select id="queryAllSysCorps" resultMap="sysCorpsResultMap">
+		SELECT
+		<include refid="sysCorpsFields" />
+		FROM
+		sys_corps
+		WHERE
+		del_flag = 0
+	</select>
+	<!-- 指挥方漏洞管理 -->
+	<select id="queryCommandLoopholesByPage" parameterType="com.safecode.cyberzone.vo.LoopholesVO"
+		resultMap="loopholesVOResultMap">
+		SELECT
+		<include refid="loopholesVOFields" />
+		FROM
+		loopholes a
+		LEFT JOIN
+		sys_user b ON
+		a.user_id = b.id_
+		AND b.del_flag =
+		0
+		LEFT JOIN sys_corps c
+		ON c.id_ =
+		a.team_id
+		AND c.del_flag = 0
+		LEFT JOIN
+		ad_work_order e ON
+		a.work_id =
+		e.id_
+		AND e.del_flag = 0
+		LEFT JOIN
+		target_infrastructure d
+		ON d.id_ =
+		e.target_id
+		AND d.del_flag = 0
+		<where>
+			<if test="status == null">
+				AND status != 1 AND status != 6
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>
+			<if test="teamId != null">
+				AND a.team_id = #{teamId}
+			</if>
+			<if test="beginDate != null">
+				AND created_at &gt;= #{beginDate}
+			</if>
+			<if test="endDate != null">
+				AND created_at &lt;= #{endDate}
+			</if>
+		</where>
+<!-- 		
+		ORDER BY
+		<choose>
+			<when test="columnName != null">
+				${columnName}
+			</when>
+			<otherwise>
+				created_at
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="sort != null">
+				${sort}
+			</when>
+			<otherwise>
+				DESC
+			</otherwise>
+		</choose> 
+-->
+		
+	</select>
+
+	<select id="queryLoopholesByUuid" parameterType="Integer"
+		resultMap="loopholesVOResultMap">
+		SELECT
+		<include refid="loopholesVOFields" />
+		FROM
+		loopholes a
+		LEFT JOIN
+		sys_user b ON
+		a.user_id = b.id_
+		AND b.del_flag =
+		0
+		LEFT JOIN sys_corps c
+		ON c.id_ =
+		a.team_id
+		AND c.del_flag = 0
+		LEFT JOIN
+		ad_work_order e ON
+		a.work_id =
+		e.id_
+		AND e.del_flag = 0
+		LEFT JOIN
+		target_infrastructure d
+		ON d.id_ =
+		e.target_id
+		AND d.del_flag = 0
+		WHERE
+		uuid = #{uuid}
+	</select>
+
+	<select id="queryLoopholesByPage" parameterType="com.safecode.cyberzone.vo.LoopholesVO"
+		resultMap="loopholesVOResultMap">
+		SELECT
+		<include refid="loopholesVOFields" />
+		FROM
+		loopholes a
+		LEFT JOIN sys_user b ON
+		a.user_id = b.id_
+		AND b.del_flag
+		= 0
+		LEFT JOIN
+		sys_corps c ON c.id_ =
+		a.team_id
+		AND c.del_flag = 0
+		LEFT JOIN
+		ad_work_order e ON a.work_id =
+		e.id_
+		AND e.del_flag = 0
+		LEFT JOIN
+		target_infrastructure d ON d.id_ = e.target_id
+		AND d.del_flag = 0
+		<where>
+			<if test="userId != null">
+				AND a.user_id = #{userId} AND a. STATUS != 6
+			</if>
+			<if test="status != null">
+				AND a.status = #{status}
+			</if>
+			<if test="taskTitle != null">
+				AND e.task_title LIKE "%"#{taskTitle}"%"
+			</if>
+			<if test="infrastructureName != null">
+				AND d.infrastructure_name LIKE
+				"%"#{infrastructureName}"%"
+			</if>
+			<if test="beginDate != null">
+				AND created_at &gt;= #{beginDate}
+			</if>
+			<if test="endDate != null">
+				AND created_at &lt;= #{endDate}
+			</if>
+		</where>
+		ORDER BY
+		<choose>
+			<when test="columnName != null">
+				${columnName}
+			</when>
+			<otherwise>
+				created_at
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="sort != null">
+				${sort}
+			</when>
+			<otherwise>
+				DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="queryWorkIdByTeamId" resultType="com.safecode.cyberzone.vo.LoopholesVO">
+		SELECT
+		a.id_ id,
+		a.operation_title operationTitle,
+		b.infrastructure_name infrastructureName
+		FROM
+		ad_work_order a
+		LEFT JOIN
+		target_infrastructure b ON a.target_id = b.id_
+		AND b.del_flag = 0
+		WHERE
+		a.del_flag = 0
+		AND a.status_ = 2
+		AND a.team_id = #{teamId}
+	</select>
+
+	<insert id="addLoopholes" parameterType="com.safecode.cyberzone.pojo.Loopholes"
+		useGeneratedKeys="true" keyProperty="uuid" keyColumn="uuid">
+		insert into loopholes
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="uuid != null">
+				uuid,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="teamId != null">
+				team_id,
+			</if>
+			<if test="workId != null">
+				work_id,
+			</if>
+			<if test="attribute != null">
+				attribute,
+			</if>
+			<if test="attributeOther != null">
+				attribute_other,
+			</if>
+			<if test="ranges != null">
+				ranges,
+			</if>
+			<if test="description != null">
+				description,
+			</if>
+			<if test="screenshot != null">
+				screenshot,
+			</if>
+			<if test="attachment != null">
+				attachment,
+			</if>
+			<if test="verifier != null">
+				verifier,
+			</if>
+			<if test="archivist != null">
+				archivist,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="refuseOpinion != null">
+				refuse_opinion,
+			</if>
+			<if test="score != null">
+				score,
+			</if>
+			<if test="scoreOpinion != null">
+				score_opinion,
+			</if>
+			<if test="createdAt != null">
+				created_at,
+			</if>
+			<if test="updatedAt != null">
+				updated_at,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="uuid != null">
+				#{uuid},
+			</if>
+			<if test="userId != null">
+				#{userId},
+			</if>
+			<if test="teamId != null">
+				#{teamId},
+			</if>
+			<if test="workId != null">
+				#{workId},
+			</if>
+			<if test="attribute != null">
+				#{attribute},
+			</if>
+			<if test="attributeOther != null">
+				#{attributeOther},
+			</if>
+			<if test="ranges != null">
+				#{ranges},
+			</if>
+			<if test="description != null">
+				#{description},
+			</if>
+			<if test="screenshot != null">
+				#{screenshot},
+			</if>
+			<if test="attachment != null">
+				#{attachment},
+			</if>
+			<if test="verifier != null">
+				#{verifier},
+			</if>
+			<if test="archivist != null">
+				#{archivist},
+			</if>
+			<if test="status != null">
+				#{status},
+			</if>
+			<if test="refuseOpinion != null">
+				#{refuseOpinion},
+			</if>
+			<if test="score != null">
+				#{score},
+			</if>
+			<if test="scoreOpinion != null">
+				#{scoreOpinion},
+			</if>
+			<if test="createdAt != null">
+				#{createdAt},
+			</if>
+			<if test="updatedAt != null">
+				#{updatedAt},
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateLoopholesByUuid" parameterType="com.safecode.cyberzone.pojo.Loopholes">
+		update loopholes
+		<set>
+			<if test="uuid != null">
+				uuid = #{uuid},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId},
+			</if>
+			<if test="teamId != null">
+				team_id = #{teamId},
+			</if>
+			<if test="workId != null">
+				work_id = #{workId},
+			</if>
+			<if test="attribute != null">
+				attribute = #{attribute},
+			</if>
+			<if test="attributeOther != null">
+				attribute_other = #{attributeOther},
+			</if>
+			<if test="ranges != null">
+				ranges = #{ranges},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="screenshot != null">
+				screenshot = #{screenshot},
+			</if>
+			<if test="attachment != null">
+				attachment = #{attachment},
+			</if>
+			<if test="verifier != null">
+				verifier = #{verifier},
+			</if>
+			<if test="archivist != null">
+				archivist = #{archivist},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="refuseOpinion != null">
+				refuse_opinion = #{refuseOpinion},
+			</if>
+			<if test="score != null">
+				score = #{score},
+			</if>
+			<if test="scoreOpinion != null">
+				score_opinion = #{scoreOpinion},
+			</if>
+			<if test="createdAt != null">
+				created_at = #{createdAt},
+			</if>
+			<if test="updatedAt != null">
+				updated_at = #{updatedAt},
+			</if>
+		</set>
+		where uuid = #{uuid}
+	</update>
+
+	<update id="delLoopholesByUuid" parameterType="Integer">
+		UPDATE loopholes
+		SET status=6
+		WHERE uuid=#{uuid}
+	</update>
+
+	<!--导出漏洞信息 -->
+	<select id="exportLoopholes" parameterType="com.safecode.cyberzone.vo.LoopholesVO"
+		resultMap="loopholesVOResultMap">
+		SELECT
+		<include refid="loopholesVOFields" />
+		FROM
+		loopholes a
+		LEFT JOIN
+		sys_user b ON
+		a.user_id = b.id_
+		AND b.del_flag =
+		0
+		LEFT JOIN sys_corps c
+		ON c.id_ =
+		a.team_id
+		AND c.del_flag = 0
+		LEFT JOIN
+		ad_work_order e ON
+		a.work_id =
+		e.id_
+		AND e.del_flag = 0
+		LEFT JOIN
+		target_infrastructure d
+		ON d.id_ =
+		e.target_id
+		AND d.del_flag = 0
+		<where>
+			<if test="status == null">
+				AND status != 1 AND status != 6
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>
+			<if test="teamId != null">
+				AND team_id = #{teamId}
+			</if>
+			<if test="beginDate != null">
+				AND created_at &gt;= #{beginDate}
+			</if>
+			<if test="endDate != null">
+				AND created_at &lt;= #{endDate}
+			</if>
+		</where>
+	</select>
+	<update id="updateLoopholesStautsByUuid" parameterType="com.safecode.cyberzone.pojo.Loopholes">
+		UPDATE
+		loopholes a
+		SET a.status = #{status}
+		WHERE a.uuid = #{uuid};
+	</update>
+</mapper>

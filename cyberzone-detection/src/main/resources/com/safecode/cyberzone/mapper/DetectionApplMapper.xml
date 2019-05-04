@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecode.cyberzone.mapper.DetectionApplMapper">
+    <sql id="detectionApplFields">
+        id ,
+        task_name,
+        task_description,
+        user_name,
+        user_email,
+        company_name,
+        company_station,
+        user_telephone,
+        user_description,
+        device_name,
+        device_description,
+        status,
+        safety_check,
+        type,
+        url,
+        appl_path,
+        appl_real_file_name ,
+        appl_file_size ,
+        appl_file_suffix ,
+        appl_storge_file_name
+        creater,
+        creater_account,
+        create_time ,
+        update_time
+    </sql>
+    <resultMap type="com.safecode.cyberzone.pojo.DetectionAppl" id="detectionApplMap">
+        <id property="id" column="id"/>
+        <result property="taskName" column="task_name"/>
+        <result property="taskDescription" column="task_description"/>
+        <result property="userName" column="user_name"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="companyName" column="company_name"/>
+        <result property="companyStation" column="company_station"/>
+        <result property="userTelephone" column="user_telephone"/>
+        <result property="userDescription" column="user_description"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="deviceDescription" column="device_description"/>
+        <result property="status" column="status"/>
+        <result property="safetyCheck" column="safety_check"/>
+        <result property="type" column="type"/>
+        <result property="url" column="url"/>
+        <result property="applPath" column="appl_path"/>
+        <result property="applRealFileName" column="appl_real_file_name"/>
+        <result property="applFileSize" column="appl_file_size"/>
+        <result property="applFileSuffix" column="appl_file_suffix"/>
+        <result property="applStorgeFileName" column="appl_storge_file_name"/>
+        <result property="creater" column="creater"/>
+        <result property="createrAccount" column="creater_account"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <insert id="addDetectionAppl" useGeneratedKeys="true" keyProperty="id"   parameterType="com.safecode.cyberzone.pojo.DetectionAppl" >
+        insert into detection_appl(
+            id,
+            task_name,
+            task_description,
+            user_name,
+            user_email,
+            company_name,
+            company_station,
+            user_telephone,
+            user_description,
+            device_name,
+            device_description,
+            status,
+            type,
+            url,
+            appl_path,
+            appl_real_file_name ,
+            appl_file_size ,
+            appl_file_suffix ,
+            appl_storge_file_name,
+            creater,
+            creater_account,
+            create_time ,
+            update_time)
+         values(
+            #{id},
+            #{taskName},
+            #{taskDescription},
+            #{userName},
+            #{userEmail},
+            #{companyName},
+            #{companyStation},
+            #{userTelephone},
+            #{userDescription},
+            #{deviceName},
+            #{deviceDescription},
+            #{status},
+            #{type},
+            #{url},
+            #{applPath},
+            #{applRealFileName},
+            #{applFileSize},
+            #{applFileSuffix},
+            #{applStorgeFileName},
+            #{creater},
+            #{createrAccount},
+            #{createTime},
+            #{updateTime}
+            )
+
+    </insert>
+
+    <insert id="saveDetectionProc" parameterType="map"  >
+        insert into common_process(
+        apply_id,
+        source_,
+        point_,
+        remark_,
+        create_time,
+        create_by,
+        del_flag
+        )
+        values(
+        #{appl_id},
+        #{source_},
+        #{point_},
+        #{remark_},
+        #{create_time},
+        #{create_by},
+        #{del_flag})
+
+    </insert>
+    <select id="findDetectionApplsByPage" parameterType="com.safecode.cyberzone.pojo.DetectionAppl" resultMap="detectionApplMap">
+        SELECT
+        id ,
+        task_name,
+        task_description,
+        user_name,
+        user_email,
+        company_name,
+        company_station,
+        user_telephone,
+        user_description,
+        device_name,
+        device_description,
+        status,
+        safety_check,
+        type,
+        url,
+        appl_path,
+        appl_real_file_name ,
+        appl_file_size ,
+        appl_file_suffix ,
+        appl_storge_file_name
+        creater,
+        creater_account,
+        create_time ,
+        update_time
+        FROM
+        detection_appl
+        <where>
+            <if test="userName != null and userName!=''">
+                AND user_name LIKE  "%"#{userName}"%"
+            </if>
+            <if test="taskName != null and taskName!=''">
+                AND task_name LIKE  "%"#{taskName}"%"
+            </if>
+            <if test="type != null and type!=''">
+                AND type = #{type}
+            </if>
+            <if test="status != null and status!=''">
+                AND status = #{status}
+            </if>
+            <if test="creater != null and creater!=''">
+                AND creater LIKE  "%"#{creater}"%"
+            </if>
+            <if test="createrAccount != null">
+                AND creater_account = #{createrAccount}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime}
+            </if>
+
+        </where>
+        ORDER  by  create_time desc
+    </select>
+    <select id="findDetectionApplTotal" parameterType="com.safecode.cyberzone.pojo.DetectionAppl" resultType="Integer">
+        SELECT
+        COUNT(id)
+        FROM
+        detection_appl
+        <where>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+
+        </where>
+    </select>
+    <select id="findDetectionApplById" parameterType="string" resultMap="detectionApplMap">
+        SELECT
+        id ,
+        task_name,
+        task_description,
+        user_name,
+        user_email,
+        company_name,
+        company_station,
+        user_telephone,
+        user_description,
+        device_name,
+        device_description,
+        status,
+        safety_check,
+        type,
+        url,
+        appl_path,
+        appl_real_file_name ,
+        appl_file_size ,
+        appl_file_suffix ,
+        appl_storge_file_name,
+        creater,
+        creater_account,
+        create_time ,
+        update_time
+        FROM
+        detection_appl
+        <where>
+            <if test="_parameter  != null">
+                AND id = #{id}
+            </if>
+
+        </where>
+    </select>
+    <select id="findPathByApplId" parameterType="string" resultType="com.safecode.cyberzone.pojo.DetectionAudit">
+        SELECT
+        audit.path,
+        audit.id,
+        audit.appl_id as applId,
+        audit.audit_file_name as auditFileName
+        FROM
+        detection_audit audit
+        LEFT JOIN detection_appl appl
+        ON audit.appl_id =appl.id
+        <where>
+            <if test="_parameter  != null">
+                AND audit.appl_id = #{value}
+            </if>
+
+        </where>
+        ORDER By audit.create_time DESC LIMIT 0,1
+    </select>
+    <select id="delDetectionApplById" parameterType="string">
+        <if test="value != null">
+            DELETE
+            FROM
+            detection_appl where id =#{id}
+        </if>
+    </select>
+    <select id="putDetectionAppl" parameterType="com.safecode.cyberzone.pojo.DetectionAppl" >
+        UPDATE
+        detection_appl
+        <trim prefix="set" suffixOverrides=",">
+            <if test="taskName !=null">
+                task_name=#{taskName},
+            </if>
+            <if test="taskDescription !=null">
+                task_description=#{taskDescription},
+            </if>
+            <if test="userName !=null">
+                user_name=#{userName},
+            </if>
+            <if test="userEmail !=null">
+                user_email=#{userEmail},
+            </if>
+            <if test="companyName !=null">
+                company_name=#{companyName},
+            </if>
+            <if test="companyStation !=null">
+                company_station=#{companyStation},
+            </if>
+            <if test="userTelephone !=null">
+                user_telephone=#{userTelephone},
+            </if>
+            <if test="userDescription !=null">
+                user_description=#{userDescription},
+            </if>
+            <if test="deviceName !=null">
+                device_name=#{deviceName},
+            </if>
+            <if test="deviceDescription !=null">
+                device_description=#{deviceDescription},
+            </if>
+            <if test="status !=null">
+                status=#{status},
+            </if>
+            <if test="safetyCheck !=null">
+                safety_check=#{safetyCheck},
+            </if>
+            <if test="type !=null">
+                type=#{type},
+            </if>
+            <if test="url !=null">
+                url=#{url},
+            </if>
+            <if test="applPath !=null">
+                appl_path=#{applPath},
+            </if>
+            <if test="applRealFileName !=null">
+                appl_real_file_name=#{applRealFileName},
+            </if>
+            <if test="applFileSize !=null">
+                appl_file_size=#{applFileSize},
+            </if>
+            <if test="applFileSuffix !=null">
+                appl_file_suffix=#{applFileSuffix},
+            </if>
+            <if test="applStorgeFileName !=null">
+                appl_storge_file_name=#{applStorgeFileName},
+            </if>
+            <if test="creater !=null">
+                creater=#{creater},
+            </if>
+            <if test="createrAccount !=null">
+                creater_account=#{createrAccount},
+            </if>
+            <if test="createTime !=null">
+                create_time=#{createTime},
+            </if>
+            <if test="updateTime !=null">
+                update_time=#{updateTime},
+            </if>
+        </trim>
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+
+        </where>
+    </select>
+    <select id="findDetectionApplsByIds" resultMap="detectionApplMap" parameterType = "java.util.List">
+        SELECT
+        <include refid="detectionApplFields"/>
+        FROM
+        detection_appl
+        WHERE
+        id IN
+        <if test="list !=null and list != ''">
+            <foreach collection="list"  index="index" item="item" open="(" separator="," close=")"  >
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+</mapper>

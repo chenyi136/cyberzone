@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.VmApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.VmApply" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="vm_id" property="vmId" jdbcType="BIGINT" />
+    <result column="apply_name" property="applyName" jdbcType="VARCHAR" />
+    <result column="system_environment" property="systemEnvironment" jdbcType="VARCHAR" />
+    <result column="system_type" property="systemType" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="resource_allocation" property="resourceAllocation" jdbcType="INTEGER" />
+    <result column="memory_" property="memory" jdbcType="INTEGER" />
+    <result column="disk_" property="disk" jdbcType="INTEGER" />
+    <result column="cpu_" property="cpu" jdbcType="INTEGER" />
+    <result column="source_" property="source" jdbcType="INTEGER" />
+    <result column="status_" property="status" jdbcType="INTEGER" />
+    <result column="vm_url" property="vmUrl" jdbcType="VARCHAR" />
+    <result column="vm_ip" property="vmIp" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from vm_apply
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.VmApply" 
+  															useGeneratedKeys="true" keyProperty="id" >
+    insert into vm_apply (id_, vm_id, apply_name, 
+      system_environment, system_type, start_time, 
+      end_time, resource_allocation, memory_, 
+      disk_, cpu_, source_, 
+      status_, vm_url, vm_ip, 
+      create_time, create_by, update_time, 
+      update_by, del_flag, remark_
+      )
+    values (#{id,jdbcType=BIGINT}, #{vmId,jdbcType=BIGINT}, #{applyName,jdbcType=VARCHAR}, 
+      #{systemEnvironment,jdbcType=VARCHAR}, #{systemType,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{resourceAllocation,jdbcType=INTEGER}, #{memory,jdbcType=INTEGER}, 
+      #{disk,jdbcType=INTEGER}, #{cpu,jdbcType=INTEGER}, #{source,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{vmUrl,jdbcType=VARCHAR}, #{vmIp,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=BIGINT}, #{delFlag,jdbcType=BIT}, #{remark,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.VmApply" >
+    update vm_apply
+    set vm_id = #{vmId,jdbcType=BIGINT},
+      apply_name = #{applyName,jdbcType=VARCHAR},
+      system_environment = #{systemEnvironment,jdbcType=VARCHAR},
+      system_type = #{systemType,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      resource_allocation = #{resourceAllocation,jdbcType=INTEGER},
+      memory_ = #{memory,jdbcType=INTEGER},
+      disk_ = #{disk,jdbcType=INTEGER},
+      cpu_ = #{cpu,jdbcType=INTEGER},
+      source_ = #{source,jdbcType=INTEGER},
+      status_ = #{status,jdbcType=INTEGER},
+      vm_url = #{vmUrl,jdbcType=VARCHAR},
+      vm_ip = #{vmIp,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, vm_id, apply_name, system_environment, system_type, start_time, end_time, 
+    resource_allocation, memory_, disk_, cpu_, source_, status_, vm_url, vm_ip, create_time, 
+    create_by, update_time, update_by, del_flag, remark_
+    from vm_apply
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, vm_id, apply_name, system_environment, system_type, start_time, end_time, 
+    resource_allocation, memory_, disk_, cpu_, source_, status_, vm_url, vm_ip, create_time, 
+    create_by, update_time, update_by, del_flag, remark_
+    from vm_apply
+  </select>
+  
+  <select id="queryPageList" resultMap="BaseResultMap" >
+    select id_, vm_id, apply_name, system_environment, system_type, start_time, end_time, 
+    resource_allocation, memory_, disk_, cpu_, source_, status_, vm_url, vm_ip, create_time, 
+    create_by, update_time, update_by, del_flag, remark_
+    from vm_apply
+	<where>
+    	del_flag = '0'
+		<if test="type != null and type != '' and type == 2">
+			AND status_ != 0
+		</if>
+		<if test="userId != null and userId != ''">
+			AND create_by = #{userId}
+		</if>
+		<if test="status != null and status != ''">
+			AND status_ = #{status}
+		</if>
+		<if test="systemEnvironment != null and systemEnvironment != ''">
+			AND system_environment = #{systemEnvironment}
+		</if>
+    </where>
+  </select>
+  
+  <select id="queryBy" resultMap="BaseResultMap" >
+    select id_, vm_id, apply_name, system_environment, system_type, start_time, end_time, 
+    resource_allocation, memory_, disk_, cpu_, source_, status_, vm_url, vm_ip, create_time, 
+    create_by, update_time, update_by, del_flag, remark_
+    from vm_apply
+	<where>
+    	del_flag = '0'
+		<if test="applyName != null and applyName != ''">
+			AND apply_name = #{applyName}
+		</if>
+		<if test="vmId != null and vmId != ''">
+			AND vm_id = #{vmId}
+		</if>
+		<if test="notStatus != null and notStatus != ''">
+			AND status_ != #{notStatus}
+		</if>
+    </where>
+  </select>
+  
+  <select id="queryUserAutoApply" resultType="java.util.Map" >
+    select id_, vm_id, apply_name, system_environment, system_type, start_time, end_time, 
+    resource_allocation, memory_, disk_, cpu_, source_, status_, vm_url, vm_ip, create_time, 
+    create_by, update_time, update_by, del_flag, remark_
+    from vm_apply
+	<where>
+    	del_flag = '0'
+    	AND status_ = 2
+		AND apply_name = #{applyName}
+    </where>
+  </select>
+  
+  <select id="queryCorpsVm" parameterType="java.util.List" resultType="java.util.Map" >
+    select id_, vm_id, apply_name, system_environment, system_type, start_time, end_time, 
+    resource_allocation, memory_, disk_, cpu_, source_, status_, vm_url, vm_ip, create_time, 
+    create_by, update_time, update_by, del_flag, remark_
+    from vm_apply
+	<where>
+    	del_flag = '0'
+    	AND status_ = 2
+		AND create_by in
+		<foreach collection="list" item="itemId" open="(" separator="," close=")" >
+			#{itemId}
+		</foreach>
+    </where>
+  </select>
+  
+</mapper>

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.ToolsLibraryMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.ToolsLibrary" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+	<result column="tool_name" property="toolName" jdbcType="VARCHAR" />
+	<result column="name_" property="name" jdbcType="VARCHAR" />
+	<result column="file_name" property="fileName" jdbcType="VARCHAR" />
+	<result column="real_name" property="realName" jdbcType="VARCHAR" />
+	<result column="file_suffix" property="fileSuffix" jdbcType="VARCHAR" />
+	<result column="file_size" property="fileSize" jdbcType="BIGINT" />
+	<result column="file_path" property="filePath" jdbcType="VARCHAR" />
+	<result column="classify_" property="classify" jdbcType="INTEGER" />
+	<result column="system_environment" property="systemEnvironment" jdbcType="INTEGER" />
+	<result column="system_type" property="systemType" jdbcType="INTEGER" />
+	<result column="attack_defense_flag" property="attackDefenseFlag" jdbcType="INTEGER" />
+	
+	<result column="classify_name" property="classifyName" jdbcType="VARCHAR" />
+	<result column="system_environment_name" property="systemEnvironmentName" jdbcType="VARCHAR" />
+	<result column="system_type_name" property="systemTypeName" jdbcType="VARCHAR" />
+	<result column="attack_defense_flag_name" property="attackDefenseFlagName" jdbcType="VARCHAR" />
+	
+	<result column="intro_" property="intro" jdbcType="LONGVARCHAR" />
+	<result column="doc_name" property="docName" jdbcType="VARCHAR" />
+	<result column="doc_file_name" property="docFileName" jdbcType="VARCHAR" />
+	<result column="doc_real_name" property="docRealName" jdbcType="VARCHAR" />
+	<result column="doc_file_suffix" property="docFileSuffix" jdbcType="VARCHAR" />
+	<result column="doc_file_size" property="docFileSize" jdbcType="BIGINT" />
+	<result column="doc_file_path" property="docFilePath" jdbcType="VARCHAR" />
+	<result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+	<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	<result column="create_by" property="createBy" jdbcType="BIGINT" />
+	<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	<result column="update_by" property="updateBy" jdbcType="BIGINT" />
+	<result column="update_name" property="updateName" jdbcType="VARCHAR" />
+	<result column="del_flag" property="delFlag" jdbcType="BIT" />
+	<result column="is_open" property="isOpen" jdbcType="VARCHAR" />
+	
+	<result column="real_path" property="realPath" jdbcType="VARCHAR"/>
+	<result column="doc_real_path" property="docRealPath" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <resultMap id="viewResultMap" type="com.safecode.cyberzone.pojo.ToolsView">
+  	<result column="name" property="name" jdbcType="VARCHAR" />
+  	<result column="count" property="count" jdbcType="VARCHAR" />
+  	<result column="date" property="date" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!-- 查询分页列表啊 -->
+  <select id="queryPageList" resultMap="BaseResultMap" >
+    select tools.id_, tools.tool_name, tools.name_, tools.file_name, tools.real_name, tools.file_suffix, tools.file_size, 
+	    tools.file_path, item1.text classify_name, item2.text system_environment_name, item3.text system_type_name, item4.text attack_defense_flag_name, 
+	    tools.intro_, tools.doc_name, tools.doc_file_name, tools.doc_real_name, tools.doc_file_suffix, tools.doc_file_size, 
+	    tools.doc_file_path, tools.remark_, tools.create_time update_time, user.user_name update_name, tools.real_path real_path, tools.doc_real_path doc_real_path   
+    from tools_library tools 
+    left join tm_dic_item item1 on item1.id = tools.classify_ 
+    left join tm_dic_item item2 on item2.id = tools.system_environment 
+    left join tm_dic_item item3 on item3.id = tools.system_type 
+    left join tm_dic_item item4 on item4.id = tools.attack_defense_flag 
+    left join sys_user user on user.id_ = tools.create_by 
+    <where> 
+    	tools.del_flag = '0' 
+    	<if test="classify != null and classify != ''" >
+    		and tools.classify_ = #{classify}
+    	</if>
+    	<if test="systemEnvironment != null and systemEnvironment != ''" >
+    		and tools.system_environment = #{systemEnvironment}
+    	</if>
+    	<if test="systemType != null and systemType != ''" >
+    		and tools.system_type = #{systemType}
+    	</if>
+    	<if test="attackDefenseFlag != null and attackDefenseFlag != ''" >
+    		and tools.attack_defense_flag = #{attackDefenseFlag}
+    	</if>
+    	<if test="toolName != null and toolName != ''" >
+    		and tools.tool_name  like CONCAT('%',#{toolName},'%') 
+    	</if>
+    	<if test="createBy != null and createBy != ''" >
+    		or tools.create_by = #{createBy}
+    	</if>
+    </where> 
+  </select>
+  
+  <!-- 查询详情 -->
+  <select id="selectById" resultType="java.util.Map" parameterType="java.lang.Long" >
+	select tool_name toolName, classify_ classify, system_environment systemEnvironment, 
+		system_type systemType, attack_defense_flag attackDefenseFlag, intro_ intro, 
+		doc_file_name docFileName, doc_file_path docFilePath,
+		file_name fileName, file_path filePath, real_path realPath, doc_real_path docRealPath    
+    from tools_library  
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 删除（逻辑删除） -->
+  <update id="deleteById" parameterType="java.util.List" >
+    <!-- update tools_library
+    set del_flag = '1'
+    where id_ = #{id,jdbcType=BIGINT} -->
+    
+     update tools_library set del_flag = '1' where id_ in 
+    <foreach item="id" collection="list" open="(" separator="," close=")">
+    	#{id}
+    </foreach>
+  </update>
+  
+  <!-- 新增 -->
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.ToolsLibrary" useGeneratedKeys="true" keyProperty="id">
+    insert into tools_library (
+		id_,
+		tool_name,
+		name_,
+		file_name,
+		real_name,
+		file_suffix,
+		file_size,
+		file_path,
+		classify_,
+		system_environment,
+		system_type,
+		attack_defense_flag,
+		intro_,
+		doc_name,
+		doc_file_name,
+		doc_real_name,
+		doc_file_suffix,
+		doc_file_size,
+		doc_file_path,
+		remark_,
+		create_time,
+		create_by,
+		update_time,
+		update_by,
+		del_flag,
+		is_open,
+		real_path,
+		doc_real_path  
+	) values (
+	    #{id,jdbcType=BIGINT}, 
+	    #{toolName,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR}, 
+		#{fileName,jdbcType=VARCHAR}, 
+		#{realName,jdbcType=VARCHAR}, 
+		#{fileSuffix,jdbcType=VARCHAR}, 
+		#{fileSize,jdbcType=BIGINT}, 
+		#{filePath,jdbcType=VARCHAR}, 
+		#{classify,jdbcType=INTEGER}, 
+		#{systemEnvironment,jdbcType=INTEGER}, 
+		#{systemType,jdbcType=INTEGER}, 
+		#{attackDefenseFlag,jdbcType=INTEGER}, 
+		#{intro,jdbcType=LONGVARCHAR}, 
+		#{docName,jdbcType=VARCHAR}, 
+		#{docFileName,jdbcType=VARCHAR}, 
+		#{docRealName,jdbcType=VARCHAR}, 
+		#{docFileSuffix,jdbcType=VARCHAR}, 
+		#{docFileSize,jdbcType=BIGINT}, 
+		#{docFilePath,jdbcType=VARCHAR}, 
+		#{remark,jdbcType=LONGVARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{createBy,jdbcType=BIGINT}, 
+		#{updateTime,jdbcType=TIMESTAMP}, 
+		#{updateBy,jdbcType=BIGINT}, 
+		#{delFlag,jdbcType=BIT},
+		#{isOpen,jdbcType=VARCHAR},
+		#{realPath,jdbcType=VARCHAR},
+		#{docRealPath,jdbcType=VARCHAR} 
+	)
+  </insert>
+  
+  <!-- 修改 -->
+  <update id="updateById" parameterType="com.safecode.cyberzone.pojo.ToolsLibrary" >
+    update tools_library set 
+    <if test="toolName != '' and toolName != null">
+    	tool_name = #{toolName,jdbcType=VARCHAR},
+    </if>
+    <if test="name != '' and name != null">
+    	name_ = #{name,jdbcType=VARCHAR},
+    </if>
+    <if test="fileName != '' and fileName != null">
+    	file_name = #{fileName,jdbcType=VARCHAR},
+    </if>
+    <if test="realName != '' and realName != null">
+    	real_name = #{realName,jdbcType=VARCHAR},
+    </if>
+    <if test="fileSuffix != '' and fileSuffix != null">
+    	file_suffix = #{fileSuffix,jdbcType=VARCHAR},
+    </if>
+    <if test="fileSize != '' and fileSize != null">
+    	file_size = #{fileSize,jdbcType=BIGINT},
+    </if>
+    <if test="filePath != '' and filePath != null">
+    	file_path = #{filePath,jdbcType=VARCHAR},
+    </if>
+    <if test="classify != '' and classify != null">
+    	classify_ = #{classify,jdbcType=INTEGER},
+    </if>
+    <if test="systemEnvironment != '' and systemEnvironment != null">
+    	system_environment = #{systemEnvironment,jdbcType=INTEGER},
+    </if>
+    <if test="systemType != '' and systemType != null">
+    	system_type = #{systemType,jdbcType=INTEGER},
+    </if>
+    <if test="attackDefenseFlag != '' and attackDefenseFlag != null">
+    	attack_defense_flag = #{attackDefenseFlag,jdbcType=INTEGER},
+    </if>
+    <if test="intro != '' and intro != null">
+    	intro_ = #{intro,jdbcType=LONGVARCHAR},
+    </if>
+    <if test="docName != '' and docName != null">
+    	doc_name = #{docName,jdbcType=VARCHAR},
+    </if>
+    <if test="docFileName != '' and docFileName != null">
+    	doc_file_name = #{docFileName,jdbcType=VARCHAR},
+    </if>
+    <if test="docRealName != '' and docRealName != null">
+    	doc_real_name = #{docRealName,jdbcType=VARCHAR},
+    </if>
+    <if test="docFileSuffix != '' and docFileSuffix != null">
+    	doc_file_suffix = #{docFileSuffix,jdbcType=VARCHAR},
+    </if>
+    <if test="docFileSize != '' and docFileSize != null">
+    	doc_file_size = #{docFileSize,jdbcType=BIGINT},
+    </if>
+    <if test="docFilePath != '' and docFilePath != null">
+    	doc_file_path = #{docFilePath,jdbcType=VARCHAR},
+    </if>
+    <if test="remark != '' and remark != null">
+    	remark_ = #{remark,jdbcType=LONGVARCHAR},
+    </if>
+    <if test="updateBy != '' and updateBy != null">
+    	update_by = #{updateBy,jdbcType=BIGINT},
+    </if>
+    <if test="isOpen != '' and isOpen != null">
+    	is_open = #{isOpen,jdbcType=BIGINT},
+    </if>
+    <if test="realPath != '' and realPath != null">
+    	real_path = #{realPath,jdbcType=BIGINT},
+    </if>
+    <if test="docRealPath != '' and docRealPath != null">
+    	doc_real_path = #{docRealPath,jdbcType=BIGINT},
+    </if>
+    update_time = #{updateTime,jdbcType=TIMESTAMP} 
+	where id_ = #{id,jdbcType=BIGINT}	
+  </update>	
+  
+  <select id="oneWeekVisitCount" resultType="java.lang.Integer">
+  	SELECT count(*) count FROM sys_log WHERE YEARWEEK(date_format(create_time,'%Y-%m-%d')) = YEARWEEK(now()) and project_name = 'cyberzone-resource' and remark_ like '%进入:资源库%'
+  </select>
+  
+  <select id="oneWeekdownloadCount" resultType="java.lang.Integer">
+  	SELECT count(*) count FROM sys_log WHERE YEARWEEK(date_format(create_time,'%Y-%m-%d')) = YEARWEEK(now()) and project_name = 'cyberzone-resource' and remark_ like '%工具库下载%'
+  </select>
+  
+  <select id="systemList" resultMap="viewResultMap" >
+  	select DISTINCT (select text from tm_dic_item where id = a.system_environment and a.del_flag='1') name, count(*) count from tools_library a where a.del_flag = '0' GROUP BY a.system_environment
+  </select>
+  
+  <select id="toolsTypeList" resultMap="viewResultMap" >
+  	select tm.text name, (select count(*) from tools_library t where t.classify_ = tm.id) count from tm_dic_item tm where tm.parent_id = (select id from tm_dic_item where text = '工具分类')
+  </select>
+  
+  <select id="topTenList" resultMap="viewResultMap" >
+	select 
+	DISTINCT SUBSTR(log.remark_,7) as name, 
+	(select count(*) from sys_log l where l.remark_ = log.remark_) count 
+	from sys_log log 
+	where 
+	log.project_name = 'cyberzone-resource' 
+	and log.remark_ like '%工具库下载%' 
+	ORDER BY count desc
+	LIMIT 10
+  </select>
+  
+  <select id="nearlyOneWeekList" resultMap="viewResultMap" >
+  	select a.click_date date,ifnull(b.count,0) as count
+	from (
+	    SELECT curdate() as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 1 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 2 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 3 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 4 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 5 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 6 day) as click_date
+	) a left join (
+	  select date(create_time) as datetime, count(*) as count
+	  from sys_log where project_name = 'cyberzone-resource' and remark_ like '%工具库下载%'
+	  group by date(create_time)
+	) b on a.click_date = b.datetime ORDER BY date asc
+  </select>
+</mapper>

@@ -1,0 +1,142 @@
+body,html{
+    width: 100%;
+    height: 100%;
+    font-family: MicrosoftYaHei;
+}
+.header{
+	width: 100%;
+	height: 118px;
+	position: relative;
+	background: #163b46;
+}
+.header p{
+	position: absolute;
+	width: 100%;
+	line-height: 118px;
+	font-family: MicrosoftYaHei-Bold;
+	font-size: 60px;
+	letter-spacing: 4px;
+	color: #e0ffff;
+	text-align: center;
+	
+
+}
+.header ul{
+	position: absolute;
+	top: 35px;
+	right: 10px;
+	z-index: 10;
+}
+.header ul li{
+	float: left;
+	margin-right: 30px;
+}
+.header ul img{
+	float: left;
+	width: 30px;
+	height: 25px;
+	margin-right: 10px;
+}
+.header ul a{
+	font-weight: normal;
+	float: left;
+	color: #e0ffff;
+	font-size: 14px;
+	line-height: 25px;
+}
+.timeer{
+	float: left;
+	height: 24px;
+	line-height: 24px;
+	margin-left: 40px;
+	margin-top: 47px;
+}
+.timeer img{
+	float: left;
+}
+.timeer span{
+	float: left;
+	margin-left: 10px;
+	color: #e0ffff;
+}
+/* content */
+.content{
+	width: 100%;
+	overflow: hidden;
+	height: 883px;
+	background: url('../img/seven/bg.png') center center;
+}
+.content .center{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin-left: 180px;
+	position: relative;
+}
+ .content .menu{
+	float: left;
+	margin-left: 20px;
+}
+.content .menu li{
+	margin-top: 50px;
+	width: 332px;
+	height: 104px;
+	background-color: #215a6b;
+	border-radius: 8px;
+	border: solid 2px #3c9fbd;
+	position: relative;
+}
+.content .menu li:hover{
+	margin-top: 50px;
+	width: 332px;
+	height: 104px;
+	background-color: #163b46;
+	border-radius: 8px;
+	border: solid 2px #389fbe;
+}
+.content .menu li img{
+	position: absolute;
+	left: 22px;
+	top: 27px
+}
+.content .menu li a{
+	display: inline-block;
+	width: 100%;
+	height: 104px;
+}
+.content .menu li span{
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	line-height: 104px;
+	color: #c7e4ed;
+	font-size: 40px;
+	margin-left: 30px;
+}
+.leftp{
+	position: absolute;
+	top: 400px;
+	left: 800px;
+	width: 860px;
+	font-family: MicrosoftYaHei-Bold;
+	font-size: 30px;
+	font-weight: normal;
+	font-stretch: normal;
+	letter-spacing: 3px;
+	color: #1b4855;
+	text-indent: 60px;
+}
+.footer{
+	width: 100%;
+	height: 60px;
+	background: #0d2329;
+	color: #555;
+	font-size: 24px;
+	text-align: center;
+	line-height: 60px;
+}
+
+
+
+
+

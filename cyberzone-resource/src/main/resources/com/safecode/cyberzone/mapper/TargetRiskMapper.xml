@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.TargetRiskMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.TargetRisk" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="infrastructure_id" property="infrastructureId" jdbcType="BIGINT" />
+    <result column="risk_classify" property="riskClassify" jdbcType="INTEGER" />
+    <result column="serverity_" property="serverity" jdbcType="INTEGER" />
+    <result column="risk_descr" property="riskDescr" jdbcType="VARCHAR" />
+    <result column="attack_method" property="attackMethod" jdbcType="VARCHAR" />
+    <result column="defense_method" property="defenseMethod" jdbcType="VARCHAR" />
+    <result column="produce_environment" property="produceEnvironment" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from target_risk
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.TargetRisk" >
+    insert into target_risk (id_, infrastructure_id, risk_classify, 
+      serverity_, risk_descr, attack_method, 
+      defense_method, produce_environment, create_time, 
+      create_by, update_time, update_by, 
+      del_flag, remark_)
+    values (#{id,jdbcType=BIGINT}, #{infrastructureId,jdbcType=BIGINT}, #{riskClassify,jdbcType=INTEGER}, 
+      #{serverity,jdbcType=INTEGER}, #{riskDescr,jdbcType=VARCHAR}, #{attackMethod,jdbcType=VARCHAR}, 
+      #{defenseMethod,jdbcType=VARCHAR}, #{produceEnvironment,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=BIT}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.TargetRisk" >
+    update target_risk
+    set infrastructure_id = #{infrastructureId,jdbcType=BIGINT},
+      risk_classify = #{riskClassify,jdbcType=INTEGER},
+      serverity_ = #{serverity,jdbcType=INTEGER},
+      risk_descr = #{riskDescr,jdbcType=VARCHAR},
+      attack_method = #{attackMethod,jdbcType=VARCHAR},
+      defense_method = #{defenseMethod,jdbcType=VARCHAR},
+      produce_environment = #{produceEnvironment,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, infrastructure_id, risk_classify, serverity_, risk_descr, attack_method, 
+    defense_method, produce_environment, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from target_risk
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, infrastructure_id, risk_classify, serverity_, risk_descr, attack_method, 
+    defense_method, produce_environment, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from target_risk
+  </select>
+  
+  <!-- 自定义  -->
+  <select id="queryAll" resultMap="BaseResultMap" >
+    select id_, infrastructure_id, risk_classify, serverity_, risk_descr, attack_method, 
+    defense_method, produce_environment, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from target_risk
+    where del_flag = '0'
+  </select>
+  
+  <!-- 根据靶标的id查询对应的靶标风险  -->
+  <select id="selectTargetRisksByTargetId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, infrastructure_id, risk_classify, serverity_, risk_descr, attack_method, 
+    defense_method, produce_environment, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from target_risk
+    where del_flag = '0' and infrastructure_id = #{id}
+  </select>
+  
+   <!-- 直接根据靶标风险id删除（逻辑删除） -->
+  <update id="deleteByIds" parameterType="java.util.List" >
+    update target_risk set del_flag = '1', update_time=(select now()) where id_ in 
+    <foreach item="id" collection="list" open="(" separator="," close=")">
+    	#{id}
+    </foreach>
+  </update>
+  
+    <!-- 先删除靶标,然后根据靶标的id删除靶标风险（逻辑删除） -->
+  <update id="deleteTargetRiskByTargetIds" parameterType="java.util.List" >
+    update target_risk set del_flag = '1', update_time=(select now())  where infrastructure_id in 
+    <foreach item="id" collection="list" open="(" separator="," close=")">
+    	#{id}
+    </foreach>
+  </update>
+  
+  <!-- 根据靶标的id和靶标漏洞分类查询对应的靶标风险  -->
+  <select id="selectRiskByTargetIdAndClassify" resultMap="BaseResultMap" >
+    select id_, infrastructure_id, risk_classify, serverity_, risk_descr, attack_method, 
+    defense_method, produce_environment, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from target_risk
+    where del_flag = '0' and infrastructure_id = #{infrastructureId} and risk_classify = #{riskClassify}
+  </select>
+  
+   <!-- 根据靶标的id和靶标漏洞分类查询对应的靶标风险  -->
+  <select id="getRiskCount" resultType="java.util.HashMap" >
+    select produce_environment AS produceEnvironment, count(produce_environment) AS count 
+    from target_risk 
+    where del_flag='0' and produce_environment is not null
+    group by produce_environment
+  </select>
+  
+   <!-- 获取按照靶标风险说明及数量  -->
+  <select id="getHotKey" resultType="java.util.HashMap" >
+    select remark_ AS remark, count(remark_) AS count 
+    from target_risk 
+    where del_flag='0' and remark_ is not null 
+    group by remark_
+  </select>
+</mapper>

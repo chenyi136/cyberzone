@@ -1,0 +1,124 @@
+body,html{
+    width: 100%;
+    height: 100%;
+    font-family: MicrosoftYaHei;
+}
+.header{
+	width: 100%;
+	height: 118px;
+	position: relative;
+	background: #163b46;
+}
+.header p{
+	position: absolute;
+	width: 100%;
+	line-height: 118px;
+	font-family: MicrosoftYaHei-Bold;
+	font-size: 60px;
+	letter-spacing: 4px;
+	color: #e0ffff;
+	text-align: center;
+	
+
+}
+.header ul{
+	position: absolute;
+	top: 35px;
+	right: 10px;
+	z-index: 10;
+}
+.header ul li{
+	float: left;
+	margin-right: 30px;
+}
+.header ul img{
+	float: left;
+	width: 30px;
+	height: 25px;
+	margin-right: 10px;
+}
+.header ul a{
+	font-weight: normal;
+	float: left;
+	color: #e0ffff;
+	font-size: 14px;
+	line-height: 25px;
+}
+.timeer{
+	float: left;
+	height: 24px;
+	line-height: 24px;
+	margin-left: 40px;
+	margin-top: 47px;
+}
+.timeer img{
+	float: left;
+}
+.timeer span{
+	float: left;
+	margin-left: 10px;
+	color: #e0ffff;
+}
+.content{
+	width: 100%;
+	overflow: hidden;
+	height: 883px;
+	background: url('../img/five/bg.png') center center;
+}
+.content .center{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin-left: 180px;
+	position: relative;
+}
+ .content .menu{
+	float: left;
+	margin-left: 20px;
+}
+.content .menu li{
+	margin-top: 50px;
+	width: 353px;
+	height: 103px;
+}
+.content .menu li img{
+	width: 320px;
+}
+.house1{
+	position: absolute;
+	top: 200px;
+	left: 804px;
+}
+.house2{
+	position: absolute;
+	top: 220px;
+	left: 975px;
+}
+.house3{
+	position: absolute;
+	top: 530px;
+	left: 636px;
+}
+.house4{
+	position: absolute;
+	top:53px;
+	left: 893px;
+}
+.house5{
+	position: absolute;
+	top: 140px;
+	left: 904px;
+}
+.footer{
+	width: 100%;
+	height: 60px;
+	background: #0d2329;
+	color: #555;
+	font-size: 24px;
+	text-align: center;
+	line-height: 60px;
+}
+.hide{
+	display: none;
+} 
+

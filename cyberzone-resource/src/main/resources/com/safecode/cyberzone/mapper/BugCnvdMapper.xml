@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.BugCnvdMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.BugCnvd" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="cycle_id" property="cycleId" jdbcType="BIGINT" />
+    <result column="number_" property="number" jdbcType="VARCHAR" />
+    <result column="title_" property="title" jdbcType="VARCHAR" />
+    <result column="serverity_" property="serverity" jdbcType="VARCHAR" />
+    <result column="submit_time" property="submitTime" jdbcType="TIMESTAMP" />
+    <result column="open_time" property="openTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="classify_" property="classify" jdbcType="BIGINT" />
+    <result column="description_" property="description" jdbcType="LONGVARCHAR" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bug_cnvd
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.BugCnvd" >
+    insert into bug_cnvd (id_, cycle_id, number_, 
+      title_, serverity_, submit_time, 
+      open_time, create_time, create_by, 
+      update_time, update_by, del_flag, 
+      classify_, description_, remark_
+      )
+    values (#{id,jdbcType=BIGINT}, #{cycleId,jdbcType=BIGINT}, #{number,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{serverity,jdbcType=VARCHAR}, #{submitTime,jdbcType=TIMESTAMP}, 
+      #{openTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{delFlag,jdbcType=BIT}, 
+      #{classify,jdbcType=BIGINT}, #{description,jdbcType=LONGVARCHAR}, #{remark,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.BugCnvd" >
+    update bug_cnvd
+    set cycle_id = #{cycleId,jdbcType=BIGINT},
+      number_ = #{number,jdbcType=VARCHAR},
+      title_ = #{title,jdbcType=VARCHAR},
+      serverity_ = #{serverity,jdbcType=VARCHAR},
+      submit_time = #{submitTime,jdbcType=TIMESTAMP},
+      open_time = #{openTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      classify_ = #{classify,jdbcType=BIGINT},
+      description_ = #{description,jdbcType=LONGVARCHAR},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, cycle_id, number_, title_, serverity_, submit_time, open_time, create_time, 
+    create_by, update_time, update_by, del_flag, classify_, description_, remark_
+    from bug_cnvd
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, cycle_id, number_, title_, serverity_, submit_time, open_time, create_time, 
+    create_by, update_time, update_by, del_flag, classify_, description_, remark_
+    from bug_cnvd
+  </select>
+  
+  <update id="deleteByCycleId" parameterType="java.lang.Long" >
+    update bug_cnvd
+    set del_flag = '1'
+    where cycle_id = #{cycleId,jdbcType=BIGINT}
+  </update>
+  
+  <select id="queryPageList" resultType="com.safecode.cyberzone.pojo.BugCnvd" parameterType="com.safecode.cyberzone.vo.BugCnvdVo">
+    select id_, cycle_id, number_, title_, serverity_, submit_time, open_time, create_time, 
+    create_by, update_time, update_by, del_flag, classify_, description_, remark_
+    from bug_cnvd
+	<where>
+    	del_flag = '0'
+		<if test="title != null and title != ''">
+			AND title_ like CONCAT('%',#{title},'%')
+		</if>
+		<if test="serverity != null and serverity != ''">
+			AND serverity_ = #{serverity}
+		</if>
+	    <if test="startTime != null and startTime != ''">
+			AND open_time &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND open_time &lt;= #{endTime}
+		</if>
+		<if test="classify != null and classify != ''">
+			AND classify_ = #{classify}
+		</if>
+    </where>
+  </select>
+  
+  <select id="queryById" resultType="com.safecode.cyberzone.vo.BugCnvdVo" parameterType="java.lang.Long" >
+    select 
+    	cn.number_ AS number, 
+    	cn.title_ AS title, 
+    	cn.serverity_ AS serverity, 
+    	cn.submit_time AS submitTime, 
+    	cn.open_time AS openTime, 
+    	cn.description_ AS description,
+    	cn.cycle_id AS cycleId,
+    	cn.classify_ AS classify,
+    	cy.file_path AS filePath
+    from bug_cnvd cn
+    left join bug_cycle cy on cn.cycle_id = cy.id_
+	<where>
+    	cn.del_flag = '0'
+		and cy.del_flag = '0'
+		and cn.id_ = #{id}
+    </where>
+  </select>
+  
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into bug_cnvd (id_, cycle_id, number_, 
+      title_, serverity_, submit_time, 
+      open_time, create_time, create_by, 
+      update_time, update_by, del_flag, 
+      description_, remark_)
+    values
+    <foreach item="item" index="index" collection="list" separator=",">
+	  (#{item.id,jdbcType=BIGINT}, #{item.cycleId,jdbcType=BIGINT}, #{item.number,jdbcType=VARCHAR}, 
+      #{item.title,jdbcType=VARCHAR}, #{item.serverity,jdbcType=VARCHAR}, #{item.submitTime,jdbcType=TIMESTAMP}, 
+      #{item.openTime,jdbcType=TIMESTAMP}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=BIGINT}, 
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=BIGINT}, #{item.delFlag,jdbcType=BIT}, 
+      #{item.description,jdbcType=LONGVARCHAR}, #{item.remark,jdbcType=LONGVARCHAR})
+    </foreach>
+  </insert>
+  
+  <!-- 获取威胁等级及数量 (威胁情报库首页威胁等级的数据)  -->
+  <select id="getBugCountByServerity" resultType="java.util.HashMap" >
+    select serverity_ as serverity, count(serverity_) count 
+    from bug_cnvd 
+    where del_flag='0' and serverity_ is not null
+    group by serverity_
+  </select>
+  
+   <!-- 按照年度获取威胁数量  (威胁情报库首页时间趋势图的数据)-->
+  <select id="getBugCountByYear" resultType="java.util.HashMap" >
+    SELECT
+	COUNT(1) AS countNumber,
+	YEAR(open_time) as dateTime
+	FROM bug_cnvd where del_flag='0' AND open_time IS NOT NULL
+	GROUP BY YEAR(open_time)
+  </select>
+  
+   <!-- 按照公布时间倒序取10条数据 (威胁情报库首页重点新闻的数据)  -->
+  <select id="getKeyNews" resultMap="BaseResultMap" >
+   	SELECT * FROM bug_cnvd order by open_time desc limit 0,10
+  </select>
+  
+  <!-- 获取威胁类别及数量 (威胁情报库首页情报类别的数据)  -->
+  <select id="getBugCountByClassify" resultType="java.util.HashMap" >
+    select classify_ as classify, count(classify_) count 
+    from bug_cnvd where del_flag='0' and classify_ is not null
+    group by classify_
+  </select>
+  
+</mapper>

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.ScreenMapper">
+	<resultMap id="screenconfig" type="com.safecode.cyberzone.pojo.ScreenConfig">
+		<id column="id_" property="id" jdbcType="BIGINT" />
+		<result column="name_" property="name" jdbcType="VARCHAR" />
+		<result column="background_photo" property="backgroundphoto" />
+		<result column="del_flag" property="delflag" jdbcType="BOOLEAN" />
+	</resultMap>
+
+	<resultMap id="screencorpsconfig" type="com.safecode.cyberzone.pojo.ScreenCorpsConfig">
+		<id column="id_" property="id" jdbcType="BIGINT" />
+		<id column="corps_id" property="corpsid" jdbcType="BIGINT" />
+		<id column="coordinate_x" property="coordinatex" jdbcType="BIGINT" />
+		<id column="coordinate_y" property="coordinatey" jdbcType="BIGINT" />
+		<result column="del_flag" property="delflag" jdbcType="BOOLEAN" />
+	</resultMap>
+	
+	<resultMap id="screeninfrastructureconfig" type="com.safecode.cyberzone.pojo.ScreenInfrastructureConfig">
+		<id column="id_" property="id" jdbcType="BIGINT" />
+		<id column="coordinate_x" property="coordinatex" jdbcType="BIGINT" />
+		<id column="coordinate_y" property="coordinatey" jdbcType="BIGINT" />
+		<result column="tm_text" property="tmtext" jdbcType="VARCHAR" />
+		<result column="target_name" property="targetname" jdbcType="VARCHAR" />
+		<result column="photo_" property="photo" jdbcType="VARCHAR" />
+		<result column="del_flag" property="delflag" jdbcType="BOOLEAN" />
+	</resultMap>
+	
+	<resultMap id="screeninfrastructuretm" type="com.safecode.cyberzone.pojo.ScreenInfrastructureTm">
+		<id column="id_" property="id" jdbcType="BIGINT" />
+		<id column="coordinate_x" property="coordinatex" jdbcType="BIGINT" />
+		<id column="coordinate_y" property="coordinatey" jdbcType="BIGINT" />
+		<id column="tm_id" property="tmid" jdbcType="BIGINT" />
+		<result column="photo_" property="photo" jdbcType="VARCHAR" />
+		<result column="del_flag" property="delflag" jdbcType="BOOLEAN" />
+	</resultMap>
+	<resultMap id="screeninfrastructuretarget" type="com.safecode.cyberzone.pojo.ScreenInfrastructureTarget">
+		<id column="id_" property="id" jdbcType="BIGINT" />
+		<id column="infratm_id" property="infratmid" jdbcType="BIGINT" />
+		<result column="target_name" property="targetname" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<sql id="dicItemFields">
+        id ,
+        sort,
+        text,
+        value,
+        parent_id,
+        is_leaf,
+        tm_dic_type_id,
+        state,
+        type
+    </sql>
+    <resultMap type="com.safecode.cyberzone.pojo.DicItem" id="dicItemMap">
+        <id property="id" column="id"/>
+        <result property="sort" column="sort"/>
+        <result property="state" column="state"/>
+        <result property="text" column="text"/>
+        <result property="value" column="value"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="isLeaf" column="is_leaf"/>
+        <result property="dicTypeId" column="tm_dic_type_id"/>
+        <result property="type" column="type"/>
+    </resultMap>
+   <select id="selectAllText" resultMap="dicItemMap">
+		select * from
+		tm_dic_item
+		where parent_id=388
+	</select>
+	<select id="selectAllFromText" resultMap="dicItemMap">
+		select * from
+		tm_dic_item
+		where text=#{text}
+	</select>
+	<select id="selectAllFromId" resultMap="dicItemMap">
+		select * from
+		tm_dic_item
+		where id=#{id}
+	</select>
+	
+	 <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.TargetInfrastructure" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <id column="dic_id" property="dicid" jdbcType="BIGINT" />
+    <result column="infrastructure_name" property="infrastructureName" jdbcType="VARCHAR" />
+    <result column="vnc_url" property="vncUrl" jdbcType="VARCHAR" />
+    <result column="name_" property="name" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="file_suffix" property="fileSuffix" jdbcType="VARCHAR" />
+    <result column="file_size" property="fileSize" jdbcType="BIGINT" />
+    <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+    <result column="vnc_name" property="vncName" jdbcType="VARCHAR" />
+    <result column="vnc_file_name" property="vncFileName" jdbcType="VARCHAR" />
+    <result column="vnc_real_name" property="vncRealName" jdbcType="VARCHAR" />
+    <result column="vnc_file_suffix" property="vncFileSuffix" jdbcType="VARCHAR" />
+    <result column="vnc_file_size" property="vncFileSize" jdbcType="BIGINT" />
+    <result column="vnc_file_path" property="vncFilePath" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+    
+  </resultMap>
+  
+ <select id="selectAllTarget" resultMap="BaseResultMap">
+		select * from
+		target_infrastructure
+		where  del_flag=0
+	</select>
+	  <select id="selectAllFromName" resultMap="BaseResultMap">
+		select * from
+		target_infrastructure
+		where  del_flag=0 and infrastructure_name=#{infrastructurename}
+	</select>
+	<select id="selectAllFromDicId" resultMap="BaseResultMap">
+		select * from
+		target_infrastructure
+		where  del_flag=0 and dic_id=#{dicid}
+	</select>
+	<update id="updateTargetInfrastructureDicId">
+		  update target_infrastructure set 
+		 <if test="dicid!='' and dicid!=null">
+		  		dic_id=#{dicid}
+		  </if>
+		  
+		  where  infrastructure_name=#{infrastructurename}
+	
+	</update>
+		<update id="updateTargetInfrastructureDicIdFalse">
+		  update target_infrastructure set 
+		 dic_id=null
+		  
+		  where  infrastructure_name=#{infrastructurename}
+	
+	</update>
+	
+	
+	<select id="selectAllScreenConfig" resultMap="screenconfig">
+		select * from
+		screen_config
+		where  del_flag=0
+	</select>
+
+	<select id="selectAllScreenCorpsConfig" resultMap="screencorpsconfig">
+		select * from
+		screen_corps_config
+		where  del_flag=0
+	</select>
+	
+	<select id="selectAllScreenInfrastructureConfig" resultMap="screeninfrastructureconfig">
+		select * from
+		screen_infrastructure_config
+		where  del_flag=0
+	</select>
+
+	<select id="selectScreenConfigName" resultMap="screenconfig">
+		select * from
+		screen_config
+		where name_=#{name} and del_flag=0
+	</select>
+	<select id="selectScreenConfigId" resultMap="screenconfig">
+		select * from
+		screen_config
+		where id_=#{id} and del_flag=0
+	</select>
+
+	<select id="selectScreenCorpsConfigId" resultMap="screencorpsconfig">
+		select * from
+		screen_corps_config
+		where corps_id=#{corpsid} and del_flag=0
+	</select>
+
+	<select id="selectScreenInfrastructureConfig" resultMap="screeninfrastructureconfig">
+		select * from
+		screen_infrastructure_config
+		where tm_text=#{tmtext} and del_flag=0
+	</select>
+
+	<select id="selectScreenInfrastructureUp" resultMap="screeninfrastructureconfig">
+		select * from
+		screen_infrastructure_config
+		where tm_text=#{tmtext} and del_flag=1 and target_name=#{targetname}
+	</select>
+	
+	
+	<select id="selectScreenInfrastructureTmAll" resultMap="screeninfrastructuretm">
+		select * from
+		screen_infrastructure_tm
+		where del_flag=0
+	</select>
+	<select id="selectScreenInfrastructureTargetAll" resultMap="screeninfrastructuretarget">
+		select * from
+		screen_infrastructure_target
+		where  del_flag=0
+	</select>
+	<select id="selectScreenInfrastructureTmByText" resultMap="screeninfrastructuretm">
+		select * from
+		screen_infrastructure_tm
+		where tm_id=#{tmid} and del_flag=0
+	</select>
+	<select id="selectScreenInfrastructureTargetById" resultMap="screeninfrastructuretarget">
+		select * from
+		screen_infrastructure_target
+		where infratm_id=#{infratmid} and del_flag=0
+	</select>
+	<select id="selectScreenInfrastructureTargetByIdAll" resultMap="screeninfrastructuretarget">
+		select * from
+		screen_infrastructure_target
+		where infratm_id=#{infratmid}
+	</select>
+	<select id="selectTarget" resultMap="screeninfrastructuretarget">
+		select * from
+		screen_infrastructure_target
+		where target_name=#{targetname} and infratm_id=#{infratmid}
+	</select>
+	<insert id="insertScreenInfrastructureTm">
+		insert into
+		screen_infrastructure_tm(tm_id,coordinate_x,coordinate_y,del_flag)
+		values(#{tmid},#{coordinatex},#{coordinatey},false)
+	</insert>
+	<insert id="insertScreenInfrastructureTarget">
+		insert into
+		screen_infrastructure_target(infratm_id,target_name,del_flag)
+		values(#{infratmid},#{targetname},false)
+	</insert>
+	<update id="deleteInfrastructureConfigTargetDelFlag">
+		update screen_infrastructure_target set del_flag=true where infratm_id=#{infratmid} 
+	</update>
+	<update id="addInfrastructureConfigTargetDelFlag">
+		update screen_infrastructure_target set del_flag=false where infratm_id=#{infratmid} and target_name=#{targetname}
+	</update>
+	<update id="updateScreenInfrastructuretm">
+		  update screen_infrastructure_tm set 
+		  <if test="coordinatex!='' and coordinatex!=null">
+		  		coordinate_x=#{coordinatex},
+		  </if>
+		  <if test="coordinatey!='' and coordinatey!=null">
+		  		coordinate_y=#{coordinatey}
+		  </if>
+		  
+		  where  tm_id=#{tmid}
+	
+	</update>
+	<update id="updateScreenInfrastructuretarget">
+		  update screen_infrastructure_target set 
+		 <if test="targetname!='' and targetname!=null">
+		  		target_name=#{targetname}
+		  </if>
+		  
+		  where  infratm_id=#{infratmid}
+	
+	</update>
+
+
+	<insert id="insertScreenConfig">
+		insert into
+		screen_config(name_,background_photo,del_flag)
+		values(#{name},#{backgroundphoto},false)
+	</insert>
+
+	<insert id="insertScreenCorpsConfig">
+		insert into
+		screen_corps_config(corps_id,coordinate_x,coordinate_y,del_flag)
+		values(#{corpsid},#{coordinatex},#{coordinatey},false)
+	</insert>
+
+	<insert id="insertScreenInfrastructureConfig">
+		insert into
+		screen_infrastructure_config(tm_text,target_name,coordinate_x,coordinate_y,photo_,del_flag)
+		values(#{tmtext},#{targetname},#{coordinatex},#{coordinatey},#{photo},false)
+	</insert>
+	
+	<update id="deleteInfrastructureConfigTargetnameTrue">
+		update screen_infrastructure_config set del_flag=true where tm_text=#{tmtext} 
+	</update>
+	<update id="deleteInfrastructureConfigTargetnameFalse">
+		update screen_infrastructure_config set del_flag=false where tm_text=#{tmtext} and target_name=#{targetname}
+	</update>
+	
+	<update id="updateScreenInfrastructureConfig">
+		  update screen_infrastructure_config set 
+		  <if test="coordinatex!='' and coordinatex!=null">
+		  		coordinate_x=#{coordinatex},
+		  </if>
+		  <if test="coordinatey!='' and coordinatey!=null">
+		  		coordinate_y=#{coordinatey},
+		  </if>
+		   <if test="targetname!='' and targetname!=null">
+		  		target_name=#{targetname}
+		  </if>
+		  
+		  where  tm_text=#{tmtext}
+	
+	</update>
+	
+	<update id="updateScreenConfig">
+		  update screen_config set name_=#{name},background_photo=#{backgroundphoto} where id_=#{id}
+		  
+    </update>
+    
+    <update id="updateScreenCorpsConfig">
+		  update screen_corps_config set coordinate_x=#{coordinatex},coordinate_y=#{coordinatey} where corps_id=#{corpsid}
+		  
+    </update>
+    
+</mapper>

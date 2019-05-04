@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.AdTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.AdTask" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="title_" property="title" jdbcType="VARCHAR" />
+    <result column="status_" property="status" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ad_task
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.AdTask" 
+  																	useGeneratedKeys="true" keyProperty="id" >
+    insert into ad_task (id_, title_, status_, 
+      start_time, end_time, create_time, 
+      create_by, update_time, update_by, 
+      del_flag, remark_)
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=BIT}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.AdTask" >
+    update ad_task
+    set title_ = #{title,jdbcType=VARCHAR},
+      status_ = #{status,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, title_, status_, start_time, end_time, create_time, create_by, update_time, 
+    update_by, del_flag, remark_
+    from ad_task
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, title_, status_, start_time, end_time, create_time, create_by, update_time, 
+    update_by, del_flag, remark_
+    from ad_task
+  </select>
+  
+  <select id="queryPageList" resultMap="BaseResultMap" >
+    select id_, title_, status_, create_time, create_by, update_time, update_by, del_flag, 
+    remark_
+    from ad_task
+	<where>
+    	del_flag = '0'
+    </where>
+  </select>
+  
+  <select id="queryPageAdList" resultType="java.util.Map" >
+    select a.*,b.status_ AS teamStatus
+    from ad_task a
+	left join ad_task_teams b on a.id_ = b.task_id
+	<where>
+    	a.del_flag = '0'
+		and b.del_flag = '0'
+		AND a.status_ in(${status})
+		AND b.team_id = #{teamId}
+	</where>
+  </select>
+  
+  <select id="queryAllTargetInfrastructure" resultType="java.util.Map" >
+    select id_ AS id, infrastructure_name AS infrastructureName
+    from target_infrastructure
+    where del_flag = 0
+  </select>
+
+  <select id="queryAllSysCorps" resultType="java.util.Map" >
+    select id_ AS id, name_ AS name
+    from sys_corps
+    where del_flag = 0
+  </select>
+  
+  <select id="queryUserCorpsId" resultType="java.lang.Long" parameterType="java.lang.Long" >
+	select a.id_ from sys_corps a
+	left join sys_user_corps b 
+	on a.id_ = b.corps_id
+	where a.del_flag = 0
+	and b.del_flag = 0
+	and b.user_id = #{userId}
+	group by a.id_
+  </select>
+
+  <select id="queryTeamAcceptData" resultMap="BaseResultMap" >
+    select a.id_,a.title_
+    from ad_task a
+	left join ad_task_teams b on a.id_ = b.task_id
+	where
+    	a.del_flag = '0'
+		AND b.del_flag = '0'
+		AND a.status_ = 1
+		AND b.status_ = 1
+		AND b.team_id = #{teamId}
+  </select>
+  
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecode.cyberzone.mapper.YaraRuleTypeMapper">
+
+    <resultMap type="com.safecode.cyberzone.entity.YaraRuleType" id="yaraRuleTypeMap">
+        <id property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="chName" column="ch_name"/>
+        <result property="enName" column="en_name"/>
+        <result property="state" column="state"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createrCode" column="creater_code"/>
+        <result property="createrName" column="creater_name"/>
+    </resultMap>
+
+    <select id="findYaraRuleTypes" parameterType="com.safecode.cyberzone.entity.YaraRuleType"
+            resultMap="yaraRuleTypeMap">
+        SELECT
+        id,
+        type,
+        state,
+        ch_name,
+        en_name,
+        description,
+        create_time,
+        update_time,
+        creater_code,
+        creater_name
+        FROM
+        yara_rule_type
+        <where>
+            state = 1
+        </where>
+    </select>
+    <select id="findAllYaraRuleTypes" parameterType="com.safecode.cyberzone.entity.YaraRuleType"
+            resultMap="yaraRuleTypeMap">
+        SELECT
+        id,
+        type,
+        state,
+        ch_name,
+        en_name,
+        description,
+        create_time,
+        update_time,
+        creater_code,
+        creater_name
+        FROM
+        yara_rule_type
+    </select>
+</mapper>

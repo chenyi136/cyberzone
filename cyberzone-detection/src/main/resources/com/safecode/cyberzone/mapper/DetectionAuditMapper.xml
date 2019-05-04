@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecode.cyberzone.mapper.DetectionAuditMapper">
+    <sql id="detectionAuditFields">
+        id ,
+        path,
+        creater,
+        create_time,
+        disagree_reason,
+        audit_file_size,
+        audit_file_name,
+        appl_id,
+        update_time,
+        creater_account,
+        audit_storge_file_name
+    </sql>
+    <sql id="detectionAuditAndApplFields">
+        audit.id id ,
+        task_name,
+        task_description,
+        user_name,
+        user_description,
+        company_name,
+        company_station,
+        user_telephone,
+        user_email,
+        user_description,
+        device_name,
+        device_description,
+        status,
+        safety_check,
+        type,
+        url,
+        appl_path,
+        audit.creater,
+        audit.creater_account,
+        audit.create_time,
+        appl_real_file_name,
+        appl_file_size,
+        appl_file_suffix,
+        appl_storge_file_name,
+        audit.path,
+        audit.disagree_reason,
+        audit_file_size,
+        audit_file_name,
+        audit.appl_id,
+        appl.id aid
+    </sql>
+
+    <resultMap type="com.safecode.cyberzone.pojo.DetectionAppl" id="detectionApplMap">
+        <id property="id" column="id"/>
+        <result property="taskName" column="task_name"/>
+        <result property="taskDescription" column="task_description"/>
+        <result property="userName" column="user_name"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="companyName" column="company_name"/>
+        <result property="companyStation" column="company_station"/>
+        <result property="userTelephone" column="user_telephone"/>
+        <result property="userDescription" column="user_description"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="deviceDescription" column="device_description"/>
+        <result property="status" column="status"/>
+        <result property="safetyCheck" column="safety_check"/>
+        <result property="type" column="type"/>
+        <result property="url" column="url"/>
+        <result property="applPath" column="appl_path"/>
+        <result property="applRealFileName" column="appl_real_file_name"/>
+        <result property="applFileSize" column="appl_file_size"/>
+        <result property="applFileSuffix" column="appl_file_suffix"/>
+        <result property="applStorgeFileName" column="appl_storge_file_name"/>
+        <result property="creater" column="creater"/>
+        <result property="createrAccount" column="creater_account"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.safecode.cyberzone.pojo.DetectionAudit" id="detectionAuditMap">
+        <id property="id" column="id"/>
+        <result property="path" column="path"/>
+        <result property="creater" column="creater"/>
+        <result property="createTime" column="create_time"/>
+        <result property="disagreeReason" column="disagree_reason"/>
+        <result property="auditFileSize" column="audit_file_size"/>
+        <result property="auditFileName" column="audit_file_name"/>
+        <result property="applId" column="appl_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createrAccount" column="creater_account"/>
+        <result property="auditStorgeFileName" column="audit_storge_file_name"/>
+    </resultMap>
+    <resultMap type="com.safecode.cyberzone.vo.DetectionAuditVo" id="detectionAuditAndApplMap">
+        <id property="id" column="id"/>
+        <result property="taskName" column="task_name"/>
+        <result property="taskDescription" column="task_description"/>
+        <result property="userName" column="user_name"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="companyName" column="company_name"/>
+        <result property="companyStation" column="company_station"/>
+        <result property="userTelephone" column="user_telephone"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="deviceDescription" column="device_description"/>
+        <result property="status" column="status"/>
+        <result property="safetyCheck" column="safety_check"/>
+        <result property="statusName" column="status_name"/>
+        <result property="type" column="type"/>
+        <result property="url" column="url"/>
+        <result property="applPath" column="appl_path"/>
+        <result property="applRealFileName" column="appl_real_file_name"/>
+        <result property="applFileSize" column="appl_file_size"/>
+        <result property="applFileSuffix" column="appl_file_suffix"/>
+        <result property="applStorgeFileName" column="appl_storge_file_name"/>
+        <result property="creater" column="creater"/>
+        <result property="createrAccount" column="creater_account"/>
+        <result property="createTime" column="create_time"/>
+        <result property="path" column="path"/>
+        <result property="disagreeReason" column="disagree_reason"/>
+        <result property="auditFileSize" column="audit_file_size"/>
+        <result property="auditFileName" column="audit_file_name"/>
+        <result property="applId" column="appl_id"/>
+    </resultMap>
+
+    <select id="findDetectionAuditsByPage" parameterType="com.safecode.cyberzone.vo.DetectionAuditVo" resultMap="detectionAuditAndApplMap">
+        SELECT
+        audit.id id ,
+        task_name,
+        task_description,
+        user_name,
+        user_description,
+        company_name,
+        company_station,
+        user_telephone,
+        user_description,
+        device_name,
+        device_description,
+        status,
+        safety_check,
+        type,
+        url,
+        appl_path,
+        audit.creater,
+        audit.creater_account,
+        audit.create_time,
+        appl_real_file_name,
+        appl_file_size,
+        appl_file_suffix,
+        appl_storge_file_name,
+        audit.path,
+        audit.disagree_reason,
+        audit_file_size,
+        audit_file_name,
+        audit.appl_id,
+        appl.update_time,
+        appl.id aid
+        FROM
+        detection_audit audit
+        LEFT JOIN
+        detection_appl appl
+        ON audit.appl_id = appl.id
+        <where>
+            <if test="taskName != null ">
+                AND appl.task_name LIKE  "%"#{taskName}"%"
+            </if>
+            <if test="type != null and type !=''">
+                AND appl.type = #{type}
+            </if>
+            <if test="status != null and status !=''">
+                AND appl.status = #{status}
+            </if>
+            <if test="creater != null and creater!=''">
+                AND appl.creater LIKE  "%"#{creater}"%"
+            </if>
+            <if test="createrAccount != null">
+                AND appl.creater_account = #{createrAccount}
+            </if>
+            <if test="noPassStatus != null and noPassStatus !=''">
+                OR appl.status = #{noPassStatus}
+            </if>
+        </where>
+        order by appl.update_time desc
+    </select>
+
+    <select id="findDetectionAuditById" parameterType="string" resultMap="detectionAuditMap">
+        SELECT
+        <include refid="detectionAuditFields"/>
+        FROM
+        detection_audit
+        <where>
+            <if test="_parameter  != null">
+                AND id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="findDetectionAuditAndAppByAuditId" parameterType="string" resultMap="detectionAuditAndApplMap">
+        SELECT
+        <include refid="detectionAuditAndApplFields"/>
+        FROM
+        detection_audit audit ,detection_appl appl
+        <where>
+            audit.appl_id =appl.id
+            <if test="_parameter  != null">
+                AND audit.id = #{id}
+            </if>
+
+        </where>
+    </select>
+
+    <select id="putDetectionAudit" parameterType="com.safecode.cyberzone.pojo.DetectionAudit" >
+        UPDATE
+        detection_audit
+        <trim prefix="set" suffixOverrides=",">
+            <if test="path !=null">
+                path=#{path},
+            </if>
+            <if test="creater !=null">
+                creater=#{creater},
+            </if>
+            <if test="createTime !=null">
+                create_time=#{createTime},
+            </if>
+            <if test="disagreeReason !=null">
+                disagree_reason=#{disagreeReason},
+            </if>
+            <if test="auditFileSize !=null">
+                audit_file_size=#{auditFileSize},
+            </if>
+            <if test="auditFileName !=null">
+                audit_file_name=#{auditFileName},
+            </if>
+            <if test="updateTime !=null">
+                update_time=#{updateTime},
+            </if>
+            <if test="createrAccount !=null">
+                creater_account=#{createrAccount},
+            </if>
+            <if test="applId !=null">
+                appl_id=#{applId},
+            </if>
+            <if test="AuditStorgeFileName !=null">
+                audit_storge_file_name=#{AuditStorgeFileName},
+            </if>
+
+        </trim>
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+
+        </where>
+    </select>
+    <insert id="saveDetectionAudit" useGeneratedKeys="true" keyProperty="id"   parameterType="com.safecode.cyberzone.pojo.DetectionAudit" >
+        insert into detection_audit(
+            id,
+            path,
+            creater,
+            create_time,
+            disagree_reason,
+            audit_file_size,
+            audit_file_name,
+            update_time,
+            creater_account,
+            appl_id,
+            audit_storge_file_name
+        )
+        values(
+            #{id},
+            #{path},
+            #{creater},
+            #{createTime},
+            #{disagreeReason},
+            #{auditFileSize},
+            #{auditFileName},
+            #{updateTime},
+            #{createrAccount},
+            #{applId},
+            #{AuditStorgeFileName}
+        )
+
+    </insert>
+
+    <select id="findDetectionAuditsByIds" resultMap="detectionAuditMap" parameterType = "java.util.List">
+        SELECT
+        audit.id ,
+        audit.path,
+        audit.creater,
+        audit.create_time,
+        audit.disagree_reason,
+        audit.audit_file_size,
+        audit.audit_file_name,
+        audit.appl_id,
+        audit.update_time,
+        audit.creater_account,
+        audit.audit_storge_file_name
+        FROM
+        detection_audit audit
+        LEFT JOIN detection_appl appl
+        ON appl.id =audit.appl_id
+        WHERE
+        audit.appl_id IN
+        <if test="list !=null and list != ''">
+            <foreach collection="list"  index="index" item="item" open="(" separator="," close=")"  >
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="findNoticeBulletinById" parameterType="string" resultMap="detectionAuditAndApplMap">
+        SELECT
+        audit.id id ,
+        task_name,
+        task_description,
+        user_name,
+        user_description,
+        company_name,
+        company_station,
+        user_telephone,
+        user_description,
+        device_name,
+        device_description,
+        status,
+        safety_check,
+        type,
+        url,
+        appl_path,
+        audit.creater,
+        audit.creater_account,
+        audit.create_time,
+        appl_real_file_name,
+        appl_file_size,
+        appl_file_suffix,
+        appl_storge_file_name,
+        audit.path,
+        audit.disagree_reason,
+        audit_file_size,
+        audit_file_name,
+        audit.appl_id,
+        appl.id aid
+        FROM
+        detection_audit audit
+        LEFT JOIN
+        detection_appl appl
+        ON audit.appl_id = appl.id
+        <where>
+            <if test="_parameter  != null ">
+                AND appl.id = #{id}
+            </if>
+        </where>
+        ORDER BY audit.create_time desc
+    </select>
+
+    <select id="findNoticeBulletinByPage" parameterType="com.safecode.cyberzone.pojo.DetectionAppl" resultMap="detectionApplMap">
+        SELECT
+        id ,
+        task_name,
+        task_description,
+        user_name,
+        user_email,
+        company_name,
+        company_station,
+        user_telephone,
+        user_description,
+        device_name,
+        device_description,
+        status,
+        safety_check,
+        type,
+        url,
+        appl_path,
+        appl_real_file_name ,
+        appl_file_size ,
+        appl_file_suffix ,
+        appl_storge_file_name
+        creater,
+        creater_account,
+        create_time ,
+        update_time
+        FROM
+        detection_appl
+        <where>
+            1 = 1
+            <if test="creater != null and creater!=''">
+                AND creater LIKE  "%"#{creater}"%"
+            </if>
+            <if test="createrAccount != null">
+                AND creater_account = #{createrAccount}
+            </if>
+            AND status in ('3','5')
+        </where>
+        ORDER BY update_time desc
+    </select>
+</mapper>

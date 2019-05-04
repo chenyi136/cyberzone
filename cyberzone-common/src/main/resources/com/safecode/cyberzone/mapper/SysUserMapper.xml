@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.SysUserMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.base.pojo.SysUser" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="account_" property="account" jdbcType="VARCHAR" />
+    <result column="password_" property="password" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="phone_" property="phone" jdbcType="VARCHAR" />
+    <result column="email_" property="email" jdbcType="VARCHAR" />
+    <result column="avatar_" property="avatar" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="face_id" property="faceId" jdbcType="VARCHAR" />
+    <result column="face_perm" property="facePerm" jdbcType="INTEGER" />
+    <result column="signature_" property="signature" jdbcType="LONGVARCHAR" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_user
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.SysUser" 
+  														useGeneratedKeys="true" keyProperty="id">
+    insert into sys_user (id_, account_, password_, 
+      user_name, phone_, email_, 
+      avatar_, create_time, create_by, 
+      update_time, update_by, del_flag, 
+      face_id, face_perm, signature_, 
+      remark_)
+    values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{avatar,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{delFlag,jdbcType=BIT}, 
+      #{faceId,jdbcType=VARCHAR}, #{facePerm,jdbcType=INTEGER}, #{signature,jdbcType=LONGVARCHAR}, 
+      #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.SysUser" >
+    update sys_user
+    set account_ = #{account,jdbcType=VARCHAR},
+      password_ = #{password,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      phone_ = #{phone,jdbcType=VARCHAR},
+      email_ = #{email,jdbcType=VARCHAR},
+      avatar_ = #{avatar,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      face_id = #{faceId,jdbcType=VARCHAR},
+      face_perm = #{facePerm,jdbcType=INTEGER},
+      signature_ = #{signature,jdbcType=LONGVARCHAR},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, account_, password_, user_name, phone_, email_, avatar_, create_time, 
+    create_by, update_time, update_by, del_flag, face_id, face_perm, signature_, remark_
+    from sys_user
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, account_, password_, user_name, phone_, email_, avatar_, create_time, 
+    create_by, update_time, update_by, del_flag, face_id, face_perm, signature_, remark_
+    from sys_user
+  </select>
+  
+  <select id="queryList" resultMap="BaseResultMap" >
+    select id_, account_, user_name, phone_, email_
+    from sys_user
+    <where>
+    	del_flag = '0'
+    </where>
+  </select>
+  
+  <select id="queryBy" resultMap="BaseResultMap" >
+    select id_, account_, password_, user_name, phone_, email_, avatar_, create_time, 
+    create_by, update_time, update_by, del_flag, face_id, face_perm, signature_, remark_
+    from sys_user
+    <where>
+    	del_flag = '0'
+		<if test="account != null and account != ''">
+				and account_ = #{account}
+		</if>
+    </where>
+  </select>
+  
+  
+
+
+
+
+
+
+</mapper>

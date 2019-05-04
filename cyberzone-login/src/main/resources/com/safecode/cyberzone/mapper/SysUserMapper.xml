@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecode.cyberzone.mapper.SysUserMapper">
+    <sql id="sysUserFields">
+		`id_`,`account_`,`password_`,`user_name`,`phone_`,`email_`,`avatar_`,`signature_`,`remark_`,`create_time`,`create_by`,`update_time`,`update_by`,`del_flag`,`face_id`,`face_perm`
+	</sql>
+    <resultMap id="sysUserMap" type="com.safecode.cyberzone.pojo.SysUser">
+        <id column="id_" property="id"></id>
+        <result column="account_" property="account"></result>
+        <result column="password_" property="password"></result>
+        <result column="user_name" property="userName"></result>
+        <result column="phone_" property="phone"></result>
+        <result column="email_" property="email"></result>
+        <result column="avatar_" property="avatar"></result>
+        <result column="signature_" property="signature"></result>
+        <result column="remark_" property="remark"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="update_time" property="updateTime"></result>
+        <result column="update_by" property="updateBy"></result>
+        <result column="del_flag" property="delFlag"></result>
+        <result column="face_id" property="faceId"></result>
+        <result column="face_perm" property="facePerm"></result>
+    </resultMap>
+    <select id="findSysUserByAccount" resultMap="sysUserMap">
+        select
+        <include refid="sysUserFields"/>
+        from sys_user
+        <where>
+            <if test="account!=null and account!=''">
+                account_=#{account} and del_flag=0
+            </if>
+        </where>
+    </select>
+
+
+    <update id="upDateByname">
+		UPDATE sys_user s set create_time=#{time} WHERE
+		s.id_=13
+	</update>
+
+
+    <update id="updateFaceIdForAccount">
+		UPDATE sys_user set face_id=#{faceid} WHERE
+		id_=#{accountid}
+	</update>
+    <select id="selectFaceIdForUserId" resultType="string">
+		SELECT face_id FROM `sys_user` WHERE id_=#{userid}
+	</select>
+
+</mapper>

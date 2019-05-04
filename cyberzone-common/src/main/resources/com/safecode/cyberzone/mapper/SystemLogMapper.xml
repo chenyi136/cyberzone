@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.SystemLogMapper" >
+  <resultMap id="SysLogMap" type="com.safecode.cyberzone.pojo.SystemLog" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+	<result column="user_id" property="userId" jdbcType="BIGINT" />
+	<result column="user_name" property="userName" jdbcType="VARCHAR" />
+	<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	<result column="ip_" property="ipAddr" jdbcType="VARCHAR" />
+	<result column="remark_" property="remark" jdbcType="VARCHAR" />
+	<result column="project_name" property="projectName" jdbcType="VARCHAR" />
+	<result column="request_object" property="requestObject" jdbcType="VARCHAR" />
+	<result column="request_url" property="requestUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="SysLogSaveTimeMap" type="com.safecode.cyberzone.pojo.SysLogSaveTime" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+	<result column="save_time" property="saveTime" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="SysLogDicMap" type="com.safecode.cyberzone.pojo.SystemLogDic" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+	<result column="name" property="name" jdbcType="VARCHAR" />
+	<result column="value" property="value" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="queryPageList" parameterType="com.safecode.cyberzone.vo.SysLogVo" resultMap="SysLogMap" >
+  	select sys.id_, sys.user_name, sys.create_time, 
+ 	(CASE 
+  		WHEN (select dic.name from sys_log_dic dic where dic.key = sys.project_name) = NULL THEN sys.project_name
+  		ELSE (select dic.name from sys_log_dic dic where dic.key = sys.project_name) 
+ 	END) as project_name, 
+  	sys.remark_ 	
+	from sys_log sys 
+  	<where>
+  		1=1 
+  		<if test="remark != null and remark !=''">
+  			and sys.remark_  like CONCAT('%',#{remark},'%') 
+  		</if>
+  		<if test="userName != null and userName !=''">
+  			and sys.user_name  like CONCAT('%',#{userName},'%') 
+  		</if>
+  		<if test="startTime != null and startTime != ''">
+			AND sys.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND sys.create_time &lt;= #{endTime}
+		</if>
+		<if test="projectName != null and projectName != ''">
+			AND sys.project_name = #{projectName} 
+		</if>
+  	</where>
+	 order by  sys.create_time desc 	
+  </select>
+  
+  
+  <select id="exportSysLogList" resultMap="SysLogMap" >
+  	select sys.id_, sys.user_name, sys.create_time, 
+ 	(CASE 
+  		WHEN (select dic.name from sys_log_dic dic where dic.key = sys.project_name) = NULL THEN sys.project_name
+  		ELSE (select dic.name from sys_log_dic dic where dic.key = sys.project_name) 
+ 	END) as project_name, 
+  	sys.remark_,
+  	sys.ip_  	
+	from sys_log sys 
+  	<where>
+  		1=1 
+  		<if test="remark != null and remark !=''">
+  			and sys.remark_  like CONCAT('%',#{remark},'%') 
+  		</if>
+  		<if test="userName != null and userName !=''">
+  			and sys.user_name  like CONCAT('%',#{userName},'%') 
+  		</if>
+  		<if test="startTime != null and startTime != ''">
+			AND sys.create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND sys.create_time &lt;= #{endTime}
+		</if>
+		<if test="projectName != null and projectName != ''">
+			AND sys.project_name = #{projectName} 
+		</if>
+  	</where>
+	 order by  sys.create_time desc 	
+  </select>
+  
+  
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.SysLogSaveTime">
+  	insert into sys_log_save_time (
+  		save_time
+  	) values (
+  		#{saveTime}
+  	)
+  </insert>
+  
+  <update id="update" parameterType="com.safecode.cyberzone.pojo.SysLogSaveTime">
+  	update sys_log_save_time set 
+  	save_time = #{saveTime} where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectSaveTimeById" resultMap="SysLogSaveTimeMap">
+  	select id_, save_time from sys_log_save_time limit 1
+  </select>
+  
+  <select id="selectDay" resultType="java.lang.Integer">
+  	select save_time from sys_log_save_time limit 1
+  </select>
+  
+  <select id="selectCount" resultType="java.lang.Integer">
+  	select count(*) from sys_log_save_time
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Integer">
+  	delete from sys_log where create_time &lt;= date_sub(now(),interval #{day} day)
+  </delete>
+  
+  <select id="querysystemList" resultMap="SysLogDicMap">
+  	select name, value from sys_log_dic
+  </select>
+  
+  <select id="queryLastLoginData" resultMap="SysLogMap">
+	select ip_,create_time from sys_log where user_name = #{account} and remark_ = '登录系统' order by create_time desc limit 1
+  </select>
+</mapper>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.TargetCityMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.TargetCity" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="dic_id" property="dicId" jdbcType="BIGINT" />
+    <result column="dic_name" property="dicName" jdbcType="VARCHAR" />
+    <result column="organization_name" property="organizationName" jdbcType="VARCHAR" />
+    <result column="ip_url" property="ipUrl" jdbcType="VARCHAR" />
+	<result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+	<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	<result column="create_by" property="createBy" jdbcType="BIGINT" />
+	<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	<result column="update_by" property="updateBy" jdbcType="BIGINT" />
+	<result column="del_flag" property="delFlag" jdbcType="BIT" />
+  </resultMap>
+  
+  <resultMap type="com.safecode.cyberzone.pojo.ToolsView" id="viewResultMap">
+  	<result column="name" property="name" jdbcType="VARCHAR" />
+  	<result column="count" property="count" jdbcType="VARCHAR" />
+  	<result column="date" property="date" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!-- 查询分页列表啊 -->
+  <select id="queryPageList" resultMap="BaseResultMap" >
+    select city.id_, city.dic_id, item1.text dic_name, city.organization_name, city.ip_url, city.remark_, city.create_time, 
+    city.update_time, user.user_name update_by   
+    from target_city city 
+    left join tm_dic_item item1 on item1.id = city.dic_id 
+    left join sys_user user on user.id_ = city.update_by  
+    <where> 
+    	city.del_flag = '0' 
+    	<if test="dicId != null and dicId != ''" >
+    		and city.dic_id = #{dicId} 
+    	</if>
+    	<if test="organizationName != null and organizationName != ''" >
+    		and city.organization_name  like CONCAT('%',#{organizationName},'%') 
+    	</if>
+    	<if test="ipUrl != null and ipUrl != ''" >
+    		and city.ip_url  like CONCAT('%',#{ipUrl},'%') 
+    	</if>
+    </where>
+  </select>
+  
+  <!-- 查询详情 -->
+  <select id="selectById" resultType="java.util.Map" parameterType="java.lang.Long" >
+	select id_ id, dic_id dicId, organization_name organizationName, ip_url ipUrl, remark_ remark, create_time createTime, update_time updateTime,
+		update_by updateBy  
+    from target_city  
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 删除（逻辑删除） -->
+  <update id="deleteById" parameterType="java.util.List" >
+    <!-- update target_city
+    set del_flag = '1'
+    where id_ = #{id,jdbcType=BIGINT} -->
+    
+    update target_city set del_flag = '1' where id_ in 
+    <foreach item="id" collection="list" open="(" separator="," close=")">
+    	#{id}
+    </foreach>
+  </update>
+  
+  <!-- 新增 -->
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.TargetCity" useGeneratedKeys="true" keyProperty="id">
+    insert into target_city (
+		id_,
+		dic_id,
+		organization_name,
+		ip_url,
+		remark_,
+		create_time,
+		create_by,
+		update_time,
+		update_by,
+		del_flag
+	) values (
+	    #{id,jdbcType=BIGINT}, 
+	    #{dicId,jdbcType=BIGINT},
+		#{organizationName,jdbcType=VARCHAR}, 
+		#{ipUrl,jdbcType=VARCHAR}, 
+		#{remark,jdbcType=LONGVARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{createBy,jdbcType=BIGINT}, 
+		#{updateTime,jdbcType=TIMESTAMP}, 
+		#{updateBy,jdbcType=BIGINT}, 
+		#{delFlag,jdbcType=BIT} 
+	)
+  </insert>
+  
+  <!-- 修改 -->
+  <update id="updateById" parameterType="com.safecode.cyberzone.pojo.TargetCity" >
+    update target_city set 
+    <if test="dicId != '' and dicId != null">
+    	dic_id = #{dicId,jdbcType=INTEGER},
+    </if>
+    <if test="organizationName != '' and organizationName != null">
+    	organization_name = #{organizationName,jdbcType=VARCHAR},
+    </if>
+    <if test="ipUrl != '' and ipUrl != null">
+    	ip_url = #{ipUrl,jdbcType=VARCHAR},
+    </if>
+    <if test="remark != '' and remark != null">
+    	remark_ = #{remark,jdbcType=VARCHAR},
+    </if>
+    <if test="updateBy != '' and updateBy != null">
+    	update_by = #{updateBy,jdbcType=BIGINT},
+    </if>
+    update_time = #{updateTime,jdbcType=TIMESTAMP} 
+	where id_ = #{id,jdbcType=BIGINT}	
+  </update>	
+  
+  <select id="oneWeekVisitCount" resultType="java.lang.Integer">
+  	SELECT count(*) count FROM sys_log WHERE YEARWEEK(date_format(create_time,'%Y-%m-%d')) = YEARWEEK(now()) and project_name = 'cyberzone-resource' and remark_ like '%进入:资源库%'
+  </select>
+  
+  <select id="cityTargetList" resultMap="viewResultMap" >
+  	select DISTINCT tm.text name,(select count(*) from target_city a where a.dic_id = tm.id) count from tm_dic_item tm 
+	where tm.id in (select id from tm_dic_item where parent_id = (select id from tm_dic_item where text='城市靶标')) ORDER BY tm.text
+  </select>
+  
+  <select id="nearlyOneWeekList" resultMap="viewResultMap" >
+  	select a.click_date date,ifnull(b.count,0) as count
+	from (
+	    SELECT curdate() as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 1 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 2 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 3 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 4 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 5 day) as click_date
+	    union all
+	    SELECT date_sub(curdate(), interval 6 day) as click_date
+	) a left join (
+	  select date(create_time) as datetime, count(*) as count
+	  from sys_log where project_name = 'cyberzone-resource' and remark_ like '%进入:资源库%'
+	  group by date(create_time)
+	) b on a.click_date = b.datetime ORDER BY date asc
+  </select>
+</mapper>

@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.ToolsLibraryApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.ToolsLibraryApply" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="tool_name" property="toolName" jdbcType="VARCHAR" />
+    <result column="name_" property="name" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="file_suffix" property="fileSuffix" jdbcType="VARCHAR" />
+    <result column="file_size" property="fileSize" jdbcType="BIGINT" />
+    <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+    <result column="classify_" property="classify" jdbcType="INTEGER" />
+    <result column="system_environment" property="systemEnvironment" jdbcType="INTEGER" />
+    <result column="system_type" property="systemType" jdbcType="INTEGER" />
+    <result column="attack_defense_flag" property="attackDefenseFlag" jdbcType="INTEGER" />
+    <result column="apply_status" property="applyStatus" jdbcType="VARCHAR" />
+    <result column="apply_status_name" property="applyStatusName" jdbcType="VARCHAR" />
+    <result column="doc_name" property="docName" jdbcType="VARCHAR" />
+    <result column="doc_file_name" property="docFileName" jdbcType="VARCHAR" />
+    <result column="doc_real_name" property="docRealName" jdbcType="VARCHAR" />
+    <result column="doc_file_suffix" property="docFileSuffix" jdbcType="VARCHAR" />
+    <result column="doc_file_size" property="docFileSize" jdbcType="BIGINT" />
+    <result column="doc_file_path" property="docFilePath" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="update_name" property="updateName" jdbcType="VARCHAR" />
+    <result column="approved_time" property="approvedTime" jdbcType="TIMESTAMP" />
+    <result column="approved_by" property="approvedBy" jdbcType="BIGINT" />
+    <result column="approved_name" property="approvedName" jdbcType="VARCHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="intro_" property="intro" jdbcType="LONGVARCHAR" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+    
+    <result column="real_path" property="realPath" jdbcType="VARCHAR"/>
+	<result column="doc_real_path" property="docRealPath" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <!-- 查询分页列表啊 -->
+  <select id="queryPageList" resultMap="BaseResultMap" >
+    select tools.id_, tools.tool_name, tools.name_, tools.file_name, tools.real_name, tools.file_suffix, tools.file_size, 
+	    tools.file_path, item1.text classify_name, item2.text system_environment_name, item3.text system_type_name, item4.text attack_defense_flag_name, 
+	    tools.intro_ , tools.remark_, tools.doc_name, tools.doc_file_name, tools.doc_real_name, tools.doc_file_suffix, tools.doc_file_size, 
+	    tools.doc_file_path, tools.update_time create_time, user1.user_name update_name, tools.approved_time, user2.user_name approved_name, tools.apply_status,
+	    (case when tools.apply_status = '0' then '待提交' when tools.apply_status = '1' then '待审核' when tools.apply_status = '2' then '审核通过' when tools.apply_status = '3' then '审核驳回' end) apply_status_name,
+	    tools.real_path real_path, tools.doc_real_path doc_real_path     
+    from tools_library_apply tools 
+    left join tm_dic_item item1 on item1.id = tools.classify_ 
+    left join tm_dic_item item2 on item2.id = tools.system_environment 
+    left join tm_dic_item item3 on item3.id = tools.system_type 
+    left join tm_dic_item item4 on item4.id = tools.attack_defense_flag 
+    left join sys_user user1 on user1.id_ = tools.update_by 
+    left join sys_user user2 on user2.id_ = tools.approved_by 
+    <where> 
+    	tools.del_flag = '0' 
+    	<if test="classify != null and classify != ''" >
+    		and tools.classify_ = #{classify}
+    	</if>
+    	<if test="systemEnvironment != null and systemEnvironment != ''" >
+    		and tools.system_environment = #{systemEnvironment}
+    	</if>
+    	<if test="systemType != null and systemType != ''" >
+    		and tools.system_type = #{systemType}
+    	</if>
+    	<if test="attackDefenseFlag != null and attackDefenseFlag != ''" >
+    		and tools.attack_defense_flag = #{attackDefenseFlag}
+    	</if>
+    	<if test="toolName != null and toolName != ''" >
+    		and tools.tool_name  like CONCAT('%',#{toolName},'%') 
+    	</if>
+    	<if test="applyStatus != null and applyStatus != ''" >
+    		and tools.apply_status = #{applyStatus}
+    	</if>
+    	<if test="createBy != null and createBy != ''" >
+    		and tools.create_by = #{createBy}
+    	</if>
+    	<if test="startTime != null and startTime != ''">
+			and tools.update_time &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			and tools.update_time &lt;= #{endTime}
+		</if>
+    </where>
+  </select>
+  
+  <!-- 查询分页列表啊 -->
+  <select id="queryApplyPageList" resultMap="BaseResultMap" >
+    select tools.id_, tools.tool_name, tools.name_, tools.file_name, tools.real_name, tools.file_suffix, tools.file_size, 
+	    tools.file_path, item1.text classify_name, item2.text system_environment_name, item3.text system_type_name, item4.text attack_defense_flag_name, 
+	    tools.intro_ , tools.remark_, tools.doc_name, tools.doc_file_name, tools.doc_real_name, tools.doc_file_suffix, tools.doc_file_size, 
+	    tools.doc_file_path, tools.update_time create_time, user1.user_name update_name, tools.approved_time, user2.user_name approved_name, tools.apply_status,
+	    (case when tools.apply_status = '0' then '待提交' when tools.apply_status = '1' then '待审核' when tools.apply_status = '2' then '审核通过' when tools.apply_status = '3' then '审核驳回' end) apply_status_name,
+	    tools.real_path real_path, tools.doc_real_path doc_real_path     
+    from tools_library_apply tools 
+    left join tm_dic_item item1 on item1.id = tools.classify_ 
+    left join tm_dic_item item2 on item2.id = tools.system_environment 
+    left join tm_dic_item item3 on item3.id = tools.system_type 
+    left join tm_dic_item item4 on item4.id = tools.attack_defense_flag 
+    left join sys_user user1 on user1.id_ = tools.update_by 
+    left join sys_user user2 on user2.id_ = tools.approved_by 
+    left join sys_user user3 on user3.id_ = tools.create_by 
+    <where> 
+    	tools.del_flag = '0' and tools.apply_status != '0' 
+    	<if test="classify != null and classify != ''" >
+    		and tools.classify_ = #{classify}
+    	</if>
+    	<if test="systemEnvironment != null and systemEnvironment != ''" >
+    		and tools.system_environment = #{systemEnvironment}
+    	</if>
+    	<if test="systemType != null and systemType != ''" >
+    		and tools.system_type = #{systemType}
+    	</if>
+    	<if test="attackDefenseFlag != null and attackDefenseFlag != ''" >
+    		and tools.attack_defense_flag = #{attackDefenseFlag}
+    	</if>
+    	<if test="toolName != null and toolName != ''" >
+    		and tools.tool_name  like CONCAT('%',#{toolName},'%') 
+    	</if>
+    	<if test="applyStatus != null and applyStatus != ''" >
+    		and tools.apply_status = #{applyStatus}
+    	</if>
+    	<if test="createBy != null and createBy != ''" >
+    		and tools.create_by = #{createBy}
+    	</if>
+    	<if test="startTime != null and startTime != ''">
+			and tools.update_time &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			and tools.update_time &lt;= #{endTime}
+		</if>
+    </where>
+  </select>
+  
+  <!-- 查询详情 -->
+  <select id="selectById" resultType="java.util.Map" parameterType="java.lang.Long" >
+	select tool_name toolName, classify_ classify, system_environment systemEnvironment, 
+		system_type systemType, attack_defense_flag attackDefenseFlag, intro_ intro, 
+		doc_file_name docFileName, doc_file_path docFilePath,
+		file_name fileName, file_path filePath, real_path realPath, doc_real_path docRealPath    
+    from tools_library_apply  
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 删除（逻辑删除） -->
+  <update id="deleteById" parameterType="java.lang.Long" >
+    update tools_library_apply
+    set del_flag = '1'
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 工具申请-提交审批，通过，驳回 -->
+  <update id="examinationById" parameterType="com.safecode.cyberzone.pojo.ToolsLibraryApply" >
+    update tools_library_apply 
+    set apply_status = #{applyStatus},
+    remark_ = #{remark},
+    approved_time = #{approvedTime},
+    approved_by = #{approvedBy} 
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 新增 -->
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.ToolsLibraryApply" useGeneratedKeys="true" keyProperty="id">
+      insert into tools_library_apply (
+		id_,
+		tool_name,
+		name_,
+		file_name,
+		real_name,
+		file_suffix,
+		file_size,
+		file_path,
+		classify_,
+		system_environment,
+		system_type,
+		attack_defense_flag,
+		intro_,
+		doc_name,
+		doc_file_name,
+		doc_real_name,
+		doc_file_suffix,
+		doc_file_size,
+		doc_file_path,
+		remark_,
+		create_time,
+		create_by,
+		update_time,
+		update_by,
+		del_flag,
+		apply_status,
+		approved_by,
+		real_path,
+		doc_real_path  
+	) values (
+	    #{id,jdbcType=BIGINT}, 
+	    #{toolName,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR}, 
+		#{fileName,jdbcType=VARCHAR}, 
+		#{realName,jdbcType=VARCHAR}, 
+		#{fileSuffix,jdbcType=VARCHAR}, 
+		#{fileSize,jdbcType=BIGINT}, 
+		#{filePath,jdbcType=VARCHAR}, 
+		#{classify,jdbcType=INTEGER}, 
+		#{systemEnvironment,jdbcType=INTEGER}, 
+		#{systemType,jdbcType=INTEGER}, 
+		#{attackDefenseFlag,jdbcType=INTEGER}, 
+		#{intro,jdbcType=LONGVARCHAR}, 
+		#{docName,jdbcType=VARCHAR}, 
+		#{docFileName,jdbcType=VARCHAR}, 
+		#{docRealName,jdbcType=VARCHAR}, 
+		#{docFileSuffix,jdbcType=VARCHAR}, 
+		#{docFileSize,jdbcType=BIGINT}, 
+		#{docFilePath,jdbcType=VARCHAR}, 
+		#{remark,jdbcType=LONGVARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{createBy,jdbcType=BIGINT}, 
+		#{updateTime,jdbcType=TIMESTAMP}, 
+		#{updateBy,jdbcType=BIGINT}, 
+		#{delFlag,jdbcType=BIT},
+		#{applyStatus,jdbcType=VARCHAR},
+		#{approvedBy,jdbcType=VARCHAR},
+		#{realPath,jdbcType=VARCHAR},
+		#{docRealPath,jdbcType=VARCHAR}   
+	)
+  </insert>
+  
+  <!-- 修改 -->
+  <update id="updateById" parameterType="com.safecode.cyberzone.pojo.ToolsLibraryApply" >
+    update tools_library_apply set 
+    <if test="toolName != '' and toolName != null">
+    	tool_name = #{toolName,jdbcType=VARCHAR},
+    </if>
+    <if test="name != '' and name != null">
+    	name_ = #{name,jdbcType=VARCHAR},
+    </if>
+    <if test="fileName != '' and fileName != null">
+    	file_name = #{fileName,jdbcType=VARCHAR},
+    </if>
+    <if test="realName != '' and realName != null">
+    	real_name = #{realName,jdbcType=VARCHAR},
+    </if>
+    <if test="fileSuffix != '' and fileSuffix != null">
+    	file_suffix = #{fileSuffix,jdbcType=VARCHAR},
+    </if>
+    <if test="fileSize != '' and fileSize != null">
+    	file_size = #{fileSize,jdbcType=BIGINT},
+    </if>
+    <if test="filePath != '' and filePath != null">
+    	file_path = #{filePath,jdbcType=VARCHAR},
+    </if>
+    <if test="classify != '' and classify != null">
+    	classify_ = #{classify,jdbcType=INTEGER},
+    </if>
+    <if test="systemEnvironment != '' and systemEnvironment != null">
+    	system_environment = #{systemEnvironment,jdbcType=INTEGER},
+    </if>
+    <if test="systemType != '' and systemType != null">
+    	system_type = #{systemType,jdbcType=INTEGER},
+    </if>
+    <if test="attackDefenseFlag != '' and attackDefenseFlag != null">
+    	attack_defense_flag = #{attackDefenseFlag,jdbcType=INTEGER},
+    </if>
+    <if test="intro != '' and intro != null">
+    	intro_ = #{intro,jdbcType=LONGVARCHAR},
+    </if>
+    <if test="docName != '' and docName != null">
+    	doc_name = #{docName,jdbcType=VARCHAR},
+    </if>
+    <if test="docFileName != '' and docFileName != null">
+    	doc_file_name = #{docFileName,jdbcType=VARCHAR},
+    </if>
+    <if test="docRealName != '' and docRealName != null">
+    	doc_real_name = #{docRealName,jdbcType=VARCHAR},
+    </if>
+    <if test="docFileSuffix != '' and docFileSuffix != null">
+    	doc_file_suffix = #{docFileSuffix,jdbcType=VARCHAR},
+    </if>
+    <if test="docFileSize != '' and docFileSize != null">
+    	doc_file_size = #{docFileSize,jdbcType=BIGINT},
+    </if>
+    <if test="docFilePath != '' and docFilePath != null">
+    	doc_file_path = #{docFilePath,jdbcType=VARCHAR},
+    </if>
+    <if test="remark != '' and remark != null">
+    	remark_ = #{remark,jdbcType=LONGVARCHAR},
+    </if>
+    <if test="updateBy != '' and updateBy != null">
+    	update_by = #{updateBy,jdbcType=BIGINT},
+    </if>
+    <if test="realPath != '' and realPath != null">
+    	real_path = #{realPath,jdbcType=BIGINT},
+    </if>
+    <if test="docRealPath != '' and docRealPath != null">
+    	doc_real_path = #{docRealPath,jdbcType=BIGINT},
+    </if>
+    update_time = #{updateTime,jdbcType=TIMESTAMP} 
+	where id_ = #{id,jdbcType=BIGINT}	
+  </update>	
+  
+  <!-- 审核通过，将申请的工具添加到攻防工具库中 -->
+  <insert id="addToToolsLibrary" parameterType="com.safecode.cyberzone.pojo.ToolsLibraryApply">
+  	insert into tools_library (
+  		tool_name,
+  		name_,
+  		file_name,
+  		real_name,
+  		file_suffix,
+  		file_size,
+  		file_path,
+  		classify_,
+  		system_environment,
+  		system_type,
+  		attack_defense_flag,
+  		intro_,
+  		doc_name,
+  		doc_file_name,
+  		doc_real_name,
+  		doc_file_suffix,
+  		doc_file_size,
+  		doc_file_path,
+  		remark_,
+  		create_time,
+  		create_by,
+  		update_time,
+  		update_by,
+  		del_flag,
+  		is_open,
+  		apply_id,
+  		real_path,
+  		doc_real_path  
+  	) select 
+  		apply.tool_name,
+  		apply.name_,
+  		apply.file_name,
+  		apply.real_name,
+  		apply.file_suffix,
+  		apply.file_size,
+  		apply.file_path,
+  		apply.classify_,
+  		apply.system_environment,
+  		apply.system_type,
+  		apply.attack_defense_flag,
+  		apply.intro_,
+  		apply.doc_name,
+  		apply.doc_file_name,
+  		apply.doc_real_name,
+  		apply.doc_file_suffix,
+  		apply.doc_file_size,
+  		apply.doc_file_path,
+  		apply.remark_,
+  		apply.create_time,
+  		apply.create_by,
+  		apply.update_time,
+  		apply.update_by,
+  		apply.del_flag,
+  		'1',
+  		apply.id_,
+  		apply.real_path,
+  		apply.doc_real_path  
+  		from tools_library_apply apply where apply.id_ = #{id,jdbcType=BIGINT}
+  		
+  </insert>
+</mapper>

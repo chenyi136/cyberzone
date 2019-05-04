@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safecode.cyberzone.mapper.DicTypeMapper">
+	<sql id="userFields">
+		id,
+		username,
+		PASSWORD,
+		gender,
+		email,
+		real_name,
+		register_time,
+		province,
+		city,
+		town,
+		addr,
+		is_del
+	</sql>
+	<resultMap type="user" id="userMap">
+		<id property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="password" column="password"/>
+		<result property="gender" column="gender"/>
+		<result property="email" column="email"/>
+		<result property="realName" column="real_name"/>
+		<result property="registerTime" column="register_time"/>
+		<result property="province" column="province"/>
+		<result property="city" column="city"/>
+		<result property="town" column="town"/>
+		<result property="addr" column="addr"/>
+		<result property="is_del" column="isDel"/>
+	</resultMap>
+	<select id="findUserByUsername" parameterType="String" resultMap="userMap">
+		SELECT
+			<include refid="userFields"/>
+		FROM
+			user
+		<where>
+			<if test="_parameter != null and _parameter != ''">
+				username = #{username}
+			</if>
+		</where>
+	</select>
+
+
+
+
+
+
+
+</mapper>

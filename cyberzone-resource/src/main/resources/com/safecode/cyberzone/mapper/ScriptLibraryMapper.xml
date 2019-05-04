@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.ScriptLibraryMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.ScriptLibrary" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="name_" property="name" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="file_suffix" property="fileSuffix" jdbcType="VARCHAR" />
+    <result column="file_size" property="fileSize" jdbcType="BIGINT" />
+    <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+    <result column="classify_" property="classify" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from script_library
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.ScriptLibrary" 
+														useGeneratedKeys="true" keyProperty="id">
+    insert into script_library (id_, name_, file_name, 
+      real_name, file_suffix, file_size, 
+      file_path, classify_, create_time, 
+      create_by, update_time, update_by, 
+      del_flag, remark_)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+      #{realName,jdbcType=VARCHAR}, #{fileSuffix,jdbcType=VARCHAR}, #{fileSize,jdbcType=BIGINT}, 
+      #{filePath,jdbcType=VARCHAR}, #{classify,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=BIT}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.ScriptLibrary" >
+    update script_library
+    set name_ = #{name,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      file_suffix = #{fileSuffix,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=BIGINT},
+      file_path = #{filePath,jdbcType=VARCHAR},
+      classify_ = #{classify,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, name_, file_name, real_name, file_suffix, file_size, file_path, classify_, 
+    create_time, create_by, update_time, update_by, del_flag, remark_
+    from script_library
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, name_, file_name, real_name, file_suffix, file_size, file_path, classify_, 
+    create_time, create_by, update_time, update_by, del_flag, remark_
+    from script_library
+  </select>
+  
+  <!-- 在覆盖自动生成的mapper文件时,注意生成的insert添加了获取自增主键  -->
+  <!-- 以下为自定义sql  -->
+  
+  
+  <!-- 全查(有条件) -->
+  <select id="queryAll" resultMap="BaseResultMap" >
+    select id_, name_, file_name, real_name, file_suffix, file_size, file_path, classify_, 
+    create_time, create_by, update_time, update_by, del_flag, remark_
+    from script_library
+    <where>
+    	del_flag = '0'
+    	<if test="name != null and name != ''">
+			AND name_ like CONCAT('%',#{name},'%') 
+		</if>
+		<if test="classify != null and classify != ''">
+			AND classify_ = #{classify} 
+		</if>
+    </where>
+  </select>
+  
+  <!-- 分页列表  -->
+  <select id="queryPageList" resultMap="BaseResultMap" parameterType="com.safecode.cyberzone.vo.ScriptLibraryVo">
+    select id_, name_, file_name, real_name, file_suffix, file_size, file_path, classify_, 
+    create_time, create_by, update_time, update_by, del_flag, remark_
+    from script_library
+    <where>
+    	del_flag = '0'
+    	<if test="name != null and name != ''">
+			AND name_ like CONCAT('%',#{name},'%') 
+		</if>
+		<if test="classify != null and classify != ''">
+			AND classify_ = #{classify} 
+		</if>
+    </where>
+  </select>
+</mapper>

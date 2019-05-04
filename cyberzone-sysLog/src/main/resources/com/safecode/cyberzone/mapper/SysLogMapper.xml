@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.SysLogMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.SysLog" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="ip_" property="ipAddr" jdbcType="VARCHAR" />
+    <result column="remark_" property="remark" jdbcType="VARCHAR" />
+    <result column="request_object" property="requestObject" jdbcType="VARCHAR" />
+    <result column="request_url" property="requestUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 新增 -->
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.SysLog" >
+    insert into sys_log (
+		<!-- user_id, -->
+		user_name,
+		create_time,
+		ip_,
+		remark_,
+		request_object,
+		request_url,
+		project_name  
+	) values (
+	   <!--  #{userId,jdbcType=BIGINT}, -->
+	    #{userName,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{ipAddr,jdbcType=VARCHAR}, 
+		#{remark,jdbcType=VARCHAR},
+		#{requestObject, jdbcType=VARCHAR},
+		#{requestUrl, jdbcType=VARCHAR},
+		#{projectName, jdbcType=VARCHAR}
+		<!-- CASE  
+		WHEN #{projectName, jdbcType=VARCHAR} = 'cyberzone-resource' then '资源库'
+		WHEN #{projectName, jdbcType=VARCHAR} = 'cyberzone-common' then '靶场支撑平台' 
+		WHEN #{projectName, jdbcType=VARCHAR} = 'cyberzone-detection' then '测评与服务平台' 
+		WHEN #{projectName, jdbcType=VARCHAR} = 'cyberzone-login' then '登录轨迹' 
+		ELSE #{projectName, jdbcType=VARCHAR}  
+		END  -->
+	)
+  </insert>
+</mapper>

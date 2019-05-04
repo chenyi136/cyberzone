@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"> 
+  <title>登录系统</title>
+  <style>
+    #btn{
+      display: block;
+      width: 100px;
+      height: 50px;
+      margin: 50px auto;
+    }
+    input{
+      margin-top: 50px;
+      text-align: center;
+    }
+    fieldset{
+      width: 205px;
+      height: 300px;
+      margin: 0 auto;
+      margin-top: 100px;
+    }
+  </style>
+  <script type="text/javascript">
+  		window.onload = function(){
+	  		var ReturnUrl = location.search.split("=")[1];
+			var url = document.getElementById("url");
+			url.value=ReturnUrl;
+		}
+  </script>
+</head>
+<body>
+  <form action="http://www.safecode.cyberzone:9000/checkLogin" method="post">
+  <fieldset>
+  	<input id ="url" type="hidden" name="ReturnUrl">
+	    用户名：<input type="text" placeholder="请输入用户名" name="username"><br>
+	    密码：<input type="password" placeholder="请输入密码" name="password"><br>
+	    <input type="submit" value="登录" id="btn">
+  </fieldset>
+  </form>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.CommonProcessMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.CommonProcess" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="apply_id" property="applyId" jdbcType="BIGINT" />
+    <result column="source_" property="source" jdbcType="INTEGER" />
+    <result column="point_" property="point" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from common_process
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.CommonProcess" >
+    insert into common_process (id_, apply_id, source_, 
+      point_, create_time, create_by, 
+      del_flag, remark_)
+    values (#{id,jdbcType=BIGINT}, #{applyId,jdbcType=BIGINT}, #{source,jdbcType=INTEGER}, 
+      #{point,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=BIT}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.CommonProcess" >
+    update common_process
+    set apply_id = #{applyId,jdbcType=BIGINT},
+      source_ = #{source,jdbcType=INTEGER},
+      point_ = #{point,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, apply_id, source_, point_, create_time, create_by, del_flag, remark_
+    from common_process
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, apply_id, source_, point_, create_time, create_by, del_flag, remark_
+    from common_process
+  </select>
+  
+  <select id="queryBy" resultMap="BaseResultMap" >
+    select id_, apply_id, source_, point_, create_time, create_by, del_flag, remark_
+    from common_process
+	<where>
+    	del_flag = '0'
+		<if test="applyId != null and applyId != ''">
+			AND apply_id = #{applyId}
+		</if>
+    </where>
+  </select>
+  
+</mapper>

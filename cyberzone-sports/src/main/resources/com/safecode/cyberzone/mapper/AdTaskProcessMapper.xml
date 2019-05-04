@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.AdTaskProcessMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.AdTaskProcess" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="point_" property="point" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ad_task_process
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.AdTaskProcess" >
+    insert into ad_task_process (id_, task_id, point_, 
+      create_time, create_by, del_flag
+      )
+    values (#{id,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, #{point,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, #{delFlag,jdbcType=BIT}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.AdTaskProcess" >
+    update ad_task_process
+    set task_id = #{taskId,jdbcType=BIGINT},
+      point_ = #{point,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, task_id, point_, create_time, create_by, del_flag
+    from ad_task_process
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, task_id, point_, create_time, create_by, del_flag
+    from ad_task_process
+  </select>
+  
+  <select id="queryByTaskId" resultMap="BaseResultMap" >
+    select id_, task_id, point_, create_time, create_by, del_flag
+    from ad_task_process
+	<where>
+    	del_flag = '0'
+		AND task_id = #{taskId}
+    </where>
+  </select>
+
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.safecode.cyberzone.mapper.AdTaskTeamsMapper" >
+  <resultMap id="BaseResultMap" type="com.safecode.cyberzone.pojo.AdTaskTeams" >
+    <id column="id_" property="id" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="team_id" property="teamId" jdbcType="BIGINT" />
+    <result column="status_" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="del_flag" property="delFlag" jdbcType="BIT" />
+    <result column="remark_" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ad_task_teams
+    where id_ = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.safecode.cyberzone.pojo.AdTaskTeams" >
+    insert into ad_task_teams (id_, task_id, team_id, 
+      status_, create_time, create_by, 
+      update_time, update_by, del_flag, 
+      remark_)
+    values (#{id,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, #{teamId,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{delFlag,jdbcType=BIT}, 
+      #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.safecode.cyberzone.pojo.AdTaskTeams" >
+    update ad_task_teams
+    set task_id = #{taskId,jdbcType=BIGINT},
+      team_id = #{teamId,jdbcType=BIGINT},
+      status_ = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=BIT},
+      remark_ = #{remark,jdbcType=LONGVARCHAR}
+    where id_ = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id_, task_id, team_id, status_, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from ad_task_teams
+    where id_ = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id_, task_id, team_id, status_, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from ad_task_teams
+  </select>
+  
+  <select id="queryBy" resultMap="BaseResultMap" >
+    select id_, task_id, team_id, status_, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from ad_task_teams
+	<where>
+    	del_flag = '0'
+		<if test="taskId != null and taskId != ''">
+			AND task_id = #{taskId}
+		</if>
+    </where>
+  </select>
+  
+  <update id="deleteTaskTeams" parameterType="java.lang.Long" >
+    update ad_task_teams
+    set del_flag = '1'
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </update>
+  
+  <select id="queryBytaskIdAndteamId" resultMap="BaseResultMap" >
+    select id_, task_id, team_id, status_, create_time, create_by, update_time, update_by, 
+    del_flag, remark_
+    from ad_task_teams
+    where del_flag = '0' 
+    and task_id = #{0} 
+    and team_id = #{1}
+  </select>
+  
+  <select id="queryCheckedTeamsName" resultType="java.util.Map" >
+    select b.id_ AS id, b.name_ AS name
+    from ad_task_teams a
+	left join sys_corps b on a.team_id = b.id_
+	where
+    a.del_flag = '0'
+	AND a.task_id = #{taskId}
+  </select>
+
+  <select id="queryTeamIdsByTaskId" resultType="java.lang.Long" >
+    select team_id
+    from ad_task_teams
+	where
+   	del_flag = '0'
+	AND task_id = #{taskId}
+  </select>
+  
+</mapper>
